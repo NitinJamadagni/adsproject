@@ -1,5 +1,5 @@
 '''
-	Usage : python server.py <hostname> <port> <dbFolder>
+	Usage : python server.py <port> <dbFolder>
 	Precursors : folder structure expected :
 											/dbFolder : 
 														ggsx (executable)
