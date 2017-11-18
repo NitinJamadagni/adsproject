@@ -1,5 +1,5 @@
 '''
-	Usage : python server.py <port> <dbFolder>
+	Usage : python server.py <hostname> <port> <dbFolder>
 	Precursors : folder structure expected :
 											/dbFolder : 
 														ggsx (executable)
@@ -23,8 +23,8 @@ imports
 '''
 import sys
 
-if len(sys.argv) != 3:
-	print "Usage : python server.py <port> <dbFolder>"
+if len(sys.argv) != 4:
+	print "Usage : python server.py <hostname> <port> <dbFolder>"
 
 from flask import Flask, jsonify, redirect, url_for, request
 import os
@@ -32,15 +32,16 @@ from sets import Set
 import random
 import string
 import subprocess
+import copy
 
 
 
 '''
 setup and globals
 '''
-dbFolder = sys.argv[2]
+dbFolder = sys.argv[3]
 if dbFolder[-1] != '/' : dbFolder += '/'
-queryFolder = dbFolder + 'queries/'
+queryFolder = dbFolder + 'tempqueries/'
 outputFolder = dbFolder + 'outputs/'
 app = Flask('db_server')
 app.config['UPLOAD_FOLDER'] = queryFolder
@@ -92,9 +93,9 @@ def getAlchemyFormattedOutput(file,inputTemplate):
 			if dbGraphId not in parsedGraphs.keys():
 				parsedGraphs[dbGraphId] = []
 			for pair in list(eval(mappingsLine)):
-				mappings[pair[0]] = mappings[pair[1]]
+				mappings[pair[0]] = pair[1]
 
-			graph = inputTemplate
+			graph = copy.deepcopy(inputTemplate)
 			# change ids of edges
 			for i in range(0,len(graph["edges"])):
 				graph["edges"][i]["source"] = mappings[graph["edges"][i]["source"]]
@@ -146,7 +147,7 @@ def home():
 def help():
 	response = {}
 	response["status"] = "success"
-	response["response"] = " 1. GET /help for options\n 2. GET /getLabels/<dbname> for getting all distinct labels\n 3. POST /runQuery/<dbbame> to run query and get output, makesure the query file is uploaded from form with enctype attribute set to ‘multipart/form-data’ and name should be set to 'queryfile'"
+	response["response"] = " 1. GET /help for options 2. GET /getLabels/<dbname> for getting all distinct labels 3. POST /runQuery/<dbbame> to run query and get output, makesure the query file is uploaded from form with enctype attribute set to multipart/form-data and name should be set to queryfile"
 	return jsonify(response)
 
 # get all distinct labels in DB
@@ -163,8 +164,8 @@ def getLabels(dbname):
 	return jsonify(response)
 
 
-# run the query file against the dbname, makesure the query file is uploaded from form with enctype attribute set to ‘multipart/form-data’, 
-# and the name should be set to 'queryfile', i.e <input type = "file" name = "queryfile" />
+# run the query file against the dbname, makesure the query file is uploaded from form with enctype attribute set to multipart/form-data, 
+# and the name should be set to queryfile, i.e <input type = "file" name = "queryfile" />
 @app.route('/runQuery/<string:dbname>', methods = ['POST'])
 def runQuery(dbname):
 	response = {}
@@ -177,7 +178,7 @@ def runQuery(dbname):
 	# get query file, save to temporary folder
 	tempQueryFileName =  randomword(10)
 	f = request.files['queryfile']
-	f.save(tempQueryFileName)
+	f.save(queryFolder + tempQueryFileName)
 
 
 	# run the query against db in the db folder (the index is stored in the same folder), a separate folder for output_file_name
@@ -197,6 +198,9 @@ def runQuery(dbname):
 		"stats" : out
 	}
 
+	
+
+
 
 	# getInputTemplate on queryFile
 	template = getInputTemplate(queryfile)
@@ -213,9 +217,12 @@ def runQuery(dbname):
 
 
 
-
 '''
 program flow
 '''
 if __name__== '__main__':
-	app.run(port=int(sys.argv[1]),debug=True)
+	# host = "192.168.43.44"
+	app.run(host = sys.argv[1],port=int(sys.argv[2]),debug=True)
+
+
+
