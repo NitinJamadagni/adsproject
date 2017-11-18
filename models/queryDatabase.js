@@ -1,16 +1,34 @@
 var sys = require('sys');
 var exec = require('child_process').exec;
+const axios =  require('axios'); 
 
 module.exports = {
 
-	queryWithFile : function (fileName, response, callback){
+	queryWithFile : function (queryString, response, callback){
 
-		var linux_command = "./GraphGrepSX/ggsx -f ./queries/" + fileName + " --file-match-output output_file ./output/matches_"+ fileName;
-		exec( linux_command, function (error, stdout, stderr){
-			//if error.
+		var query = 'http://' + database_config.host + ':' + database_config.port +'/getLabels/' + database_config.name;
+		console.log ('query', query);
+		axios.get(query)
+  			 .then(response => {
+				 callback(response);
+		      })
+		     .catch(error => {
+				    console.log(error);
+			  });
+		
 
-			callback("matches_" + fileName, response);
-		});
+	},
 
+	queryMetadata : function (database_config, callback){
+
+		var query = 'http://' + database_config.host + ':' + database_config.port +'/getLabels/' + database_config.name;
+		console.log ('query', query);
+		axios.get(query)
+  			 .then(response => {
+				 callback(response);
+		      })
+		     .catch(error => {
+				    console.log(error);
+			  });
 	}
 }

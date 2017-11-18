@@ -1,0 +1,29 @@
+//- index.pug
+
+doctype html
+html
+ head
+  link(rel="stylesheet", href="graph-creator.css")
+ body
+
+  #database
+   label Database Name
+   input#database-name
+   label Database Host 
+   input#database-host
+   label Database Port
+   input#database-port   	
+
+  #toolbox
+   button(id='submit-query') Submit Query
+   button(id= 'pointer-drag') Draw
+   button(id='delete-graph') Delete Query
+
+  div
+   #query-section
+   #result-section
+
+  script(type="text/javascript", src="//d3js.org/d3.v3.js")
+  script(type="text/javascript", src="//cdn.jsdelivr.net/filesaver.js/0.1/FileSaver.min.js")
+  script(type="text/javascript", src="graph-creator.js")
+  script(type="text/javascript", src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js")

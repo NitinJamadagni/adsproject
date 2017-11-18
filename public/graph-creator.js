@@ -8,6 +8,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
     
     thisGraph.nodes = nodes || [];
     thisGraph.edges = edges || [];
+    thisGraph.labels = [];
     
     thisGraph.state = {
       selectedNode: null,
@@ -120,17 +121,34 @@ document.onload = (function(d3, saveAs, Blob, undefined){
       var graph_data = window.JSON.stringify({"nodes": thisGraph.nodes, "edges": saveEdges})
       console.log (graph_data);
 
+      var request_data = {
+          graph_data : JSON.parse(graph_data),
+          database_host : d3.select('#database_host').property("value"),
+          database_port : d3.select('#database_port').property("value"),
+          datbase_name : d3.select('#database_name').property("value")
+      }
+
+
+
       //TODO : ajax call to the backend /query/database with the graph_data
       $.ajax({
-            url: '/query/submitQuery',
+            url: '/submitQuery',
             type: 'post',
             dataType: 'json',
             success: function (data) {
                console.log ('done');
             },
-            data: JSON.parse(graph_data)
+            data: request_data
         });
 
+    });
+
+    // SEND The metadata information
+    d3.select('#submit-database').on("click", function (){
+        $.get('/queryMetadata', {database_host : d3.select('#database_host').property("value"), database_port : d3.select("#database_port").property("value"), database_name : d3.select("#database_name").property("value")} , function (data) { 
+          console.log ("the data obatained from get request", data);
+          thisGraph.labels = data.labels;
+        });
     });
 
 
@@ -144,8 +162,6 @@ document.onload = (function(d3, saveAs, Blob, undefined){
     d3.select("#delete-graph").on("click", function(){
       thisGraph.deleteGraph(false);
     });
-
-
 
   };
 
@@ -555,15 +571,14 @@ document.onload = (function(d3, saveAs, Blob, undefined){
 
 
 
-
-
-
   /**** MAIN ****/
 
   // warn the user when leaving
   window.onbeforeunload = function(){
     return "Make sure to save your graph locally before leaving :-)";
   };      
+
+  console.log ("this script is called");
 
   var docEl = document.documentElement,
       bodyEl = document.getElementsByTagName('body')[0];
@@ -585,15 +600,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
         .attr("width", "600")
         .attr("height", "600");
 
-  // define an svg for the result.      
-  var svg2 = d3.select("#result-section").append("svg")
-        .attr("width", "600")
-        .attr("height", "600");
 
-
-  var result_graph = new GraphCreator(svg2,nodes,edges);
-  result_graph.setIdCt(2);
-  result_graph.updateGraph();
 
   var graph = new GraphCreator(svg, nodes, edges);
   graph.setIdCt(2);
