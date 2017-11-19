@@ -115,6 +115,18 @@ document.onload = (function(d3, saveAs, Blob, undefined){
 
     // submit the query.
     d3.select("#submit-query").on("click", function(){
+
+
+      //verify at submission all the nodes have the appropriate labels.
+      for (var index = 0; index < thisGraph.nodes.length; index++){
+        var node = thisGraph.nodes[index];
+        if (node.title == 'NEW NODE'){
+          alert("Error in query graph node labels ");
+          return;
+        }
+      }
+
+
       var saveEdges = [];
       thisGraph.edges.forEach(function(val, i){
         saveEdges.push({source: val.source.id, target: val.target.id});
@@ -141,7 +153,6 @@ document.onload = (function(d3, saveAs, Blob, undefined){
                 
                   thisGraph.response = data;
 
-
                   //clear the list first
                   var myList = document.getElementById('result-list');
                   myList.innerHTML = '';
@@ -152,18 +163,20 @@ document.onload = (function(d3, saveAs, Blob, undefined){
 
                       var count = 1;
                       for (var graph in graphs){
+                        
                         var ul = document.getElementById("result-list");
                         var li = document.createElement("li");
-                        li.setAttribute('id', graph_id + '_' + (count - 1));
-                        li.addEventListener('click', function (){
+                        var a = document.createElement("a");
+
+                        a.setAttribute('id', graph_id + '_' + (count - 1));
+                        a.setAttribute('href', '#');
+                        a.addEventListener('click', function (){
                             console.log ('this ', this);
-
                             // once  you get this id, use to extract the graph_id and the graph number from the response to update the data source of the alchemy.
-
-
                         });
-
-                        li.appendChild(document.createTextNode("Matched Graph " + count++));
+                        a.appendChild(document.createTextNode("Graph " + count++));
+                        
+                        li.appendChild(a);
                         ul.appendChild(li);
                       }
                   }
@@ -183,7 +196,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
 
     // SEND The metadata information
     d3.select('#connect-database').on("click", function (){
-      
+
         $.get('/queryMetadata', {database_host : d3.select('#database-host').property("value"), database_port : d3.select("#database-port").property("value"), database_name : d3.select("#database-name").property("value")} , function (data) { 
           console.log ("the data obatained from get request", data);
 
@@ -315,6 +328,8 @@ document.onload = (function(d3, saveAs, Blob, undefined){
     if (thisGraph.state.selectedNode){
       thisGraph.removeSelectFromNode();
     }
+
+
     thisGraph.state.selectedNode = nodeData;
   };
   
@@ -377,6 +392,9 @@ document.onload = (function(d3, saveAs, Blob, undefined){
         curScale = nodeBCR.width/consts.nodeRadius,
         placePad  =  5*curScale,
         useHW = curScale > 1 ? nodeBCR.width*0.71 : consts.nodeRadius*1.42;
+
+        console.log ("the d.title ", d.title);
+
     // replace with editableconent text
     var d3txt = thisGraph.svg.selectAll("foreignObject")
           .data([d])
@@ -400,7 +418,16 @@ document.onload = (function(d3, saveAs, Blob, undefined){
             }
           })
           .on("blur", function(d){
-            d.title = this.textContent;
+
+
+            //check if the label is part of the state.labels
+            if (thisGraph.state.labels.includes(this.textContent)){
+              d.title = this.textContent;
+              
+            }else{
+              console.log ('the slected ', d3node);
+            }
+
             thisGraph.insertTitleLinebreaks(d3node, d.title);
             d3.select(this.parentElement).remove();
           });
