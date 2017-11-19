@@ -12,7 +12,11 @@ html
    label Database Host 
    input#database-host
    label Database Port
-   input#database-port   	
+   input#database-port  
+   button(id='connect-database') Connect Database 	
+
+  #label-display
+   ul#labels
 
   #toolbox
    button(id='submit-query') Submit Query
@@ -22,6 +26,7 @@ html
   div
    #query-section
    #result-section
+    ul#result-list
 
   script(type="text/javascript", src="//d3js.org/d3.v3.js")
   script(type="text/javascript", src="//cdn.jsdelivr.net/filesaver.js/0.1/FileSaver.min.js")

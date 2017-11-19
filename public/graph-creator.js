@@ -8,7 +8,8 @@ document.onload = (function(d3, saveAs, Blob, undefined){
     
     thisGraph.nodes = nodes || [];
     thisGraph.edges = edges || [];
-    thisGraph.labels = [];
+    
+    thisGraph.response = {};
     
     thisGraph.state = {
       selectedNode: null,
@@ -21,7 +22,9 @@ document.onload = (function(d3, saveAs, Blob, undefined){
       shiftNodeDrag: false,
       selectedText: null,
       buttonIsDraw : false,
+      labels : ['a', 'b' , 'c']
     };
+
 
     // define arrow markers for graph links
     var defs = svg.append('svg:defs');
@@ -123,11 +126,10 @@ document.onload = (function(d3, saveAs, Blob, undefined){
 
       var request_data = {
           graph_data : JSON.parse(graph_data),
-          database_host : d3.select('#database_host').property("value"),
-          database_port : d3.select('#database_port').property("value"),
-          datbase_name : d3.select('#database_name').property("value")
+          database_host : d3.select('#database-host').property("value"),
+          database_port : d3.select('#database-port').property("value"),
+          datbase_name : d3.select('#database-name').property("value")
       }
-
 
 
       //TODO : ajax call to the backend /query/database with the graph_data
@@ -136,18 +138,70 @@ document.onload = (function(d3, saveAs, Blob, undefined){
             type: 'post',
             dataType: 'json',
             success: function (data) {
-               console.log ('done');
+                
+                  thisGraph.response = data;
+
+
+                  //clear the list first
+                  var myList = document.getElementById('result-list');
+                  myList.innerHTML = '';
+
+
+                  for (var graph_id in thisGraph.response){
+                      var graphs = thisGraph.response[graph_id];
+
+                      var count = 1;
+                      for (var graph in graphs){
+                        var ul = document.getElementById("result-list");
+                        var li = document.createElement("li");
+                        li.setAttribute('id', graph_id + '_' + (count - 1));
+                        li.addEventListener('click', function (){
+                            console.log ('this ', this);
+
+                            // once  you get this id, use to extract the graph_id and the graph number from the response to update the data source of the alchemy.
+
+
+                        });
+
+                        li.appendChild(document.createTextNode("Matched Graph " + count++));
+                        ul.appendChild(li);
+                      }
+                  }
             },
             data: request_data
         });
 
     });
 
+
+
+
+    d3.select("li").on("click" , function (){
+          console.log(this.property('id'));
+    });
+
+
     // SEND The metadata information
-    d3.select('#submit-database').on("click", function (){
-        $.get('/queryMetadata', {database_host : d3.select('#database_host').property("value"), database_port : d3.select("#database_port").property("value"), database_name : d3.select("#database_name").property("value")} , function (data) { 
+    d3.select('#connect-database').on("click", function (){
+      
+        $.get('/queryMetadata', {database_host : d3.select('#database-host').property("value"), database_port : d3.select("#database-port").property("value"), database_name : d3.select("#database-name").property("value")} , function (data) { 
           console.log ("the data obatained from get request", data);
-          thisGraph.labels = data.labels;
+
+          thisGraph.state.labels = data.labels;
+
+          //clear the list first
+          var myList = document.getElementById('labels');
+          myList.innerHTML = '';
+
+          //display labels 
+          for (var label = 0; label  < thisGraph.state.labels.length; label++){
+                  var ul = document.getElementById("labels");
+                  var li = document.createElement("li");
+                  li.setAttribute('id', label );
+                  li.appendChild(document.createTextNode(thisGraph.state.labels[label]));
+                  ul.appendChild(li);
+          }
+
         });
     });
 
@@ -164,6 +218,8 @@ document.onload = (function(d3, saveAs, Blob, undefined){
     });
 
   };
+
+
 
   GraphCreator.prototype.setIdCt = function(idct){
     this.idct = idct;

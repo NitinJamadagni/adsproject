@@ -11,69 +11,6 @@ function getNodeIndex(nodeId, nodes){
 }
 
 
-function extractQueryResult(fileName, response){
-
-	fileSystem.readFile("./output/" + fileName, function (err,data){
-
-		var lines = data.split("\n");
-
-		for (line in lines){
-			var tokens = line.split(":");
-			var query_id = tokens[0];
-			var graph_id = tokens[1];
-			var result_set = tokens[2];
-
-			//TODO: write a function to parse the output string.
-			var pairs_matching = constructMatchingPairs(result_set);
-
-			response.json(JSON.stringify(pairs_matching));
-		}
-	});
-}
-
-//"(1,2),(30,40),(5,6)"
-function constructMatchingPairs(result_set){
-	
-	var pairs = {};
-	var number = "";
-	var first_number, second_number;
-	
-	for (var index = 1; index < result_set.length - 1; index++){
-		
-		var previous_character = result_set[index - 1];
-		var character = result_set[index];
-		var next_character = result_set[index + 1];
-
-		console.log ('the pre ', previous_character , ' character ', character , ' next_character ', next_character);
-		
-		if (character == ',' && isNumber(previous_character) && isNumber(next_character)){	
-			console.log ('the first _ number ', number);
-			first_number = number;
-			number = "";
-		}
-		else if ( character == ')'){
-			console.log ('the second _ number ', number);
-			second_number = number;
-			number = "";
-			
-			pairs[first_number] = second_number;
-			
-		}else if (isNumber(character)){
-			number += character;
-			console.log ('the number added.', number);
-		}
-	}
-	
-	return pairs;
-}
-
-function isNumber (character){
-	console.log ("the isNumber for ", character, " is " , Number.isInteger(character));
-	return character == '0' || character == '1' || character == '2' || character == '3' || character == '4' || character == '5' || character == '6' || character == '7' || character == '8' || character == '9';
-}
-
-
-
 module.exports = {
 
 	parseQueryGraph : function (request, response , callback){
@@ -121,18 +58,15 @@ module.exports = {
 
 		}
 
-		// fileSystem.writeFile("queries/" + fileName, parsed_data, function(err){
-		// 	if (err)
-		// 		console.log ("something went wrong with parsing file creations.");
+		fileSystem.writeFile("queries/" + fileName, parsed_data, function(err){
+			if (err)
+				console.log ("something went wrong with parsing file creations.");
 
-		// 	// call the model to send the input file.
-		// 	queryDatabase.queryWithFile(fileName, response ,extractQueryResult);
-		// });
-		
-		
-		console.log ("the pairs are ", constructMatchingPairs("{(1,2),(30,40),(5,6)}"));
-		callback();
-		
+			// call the model to send the input file.
+			queryDatabase.queryWithFile(database_config, parsed_data,function extractQueryResult(database_response){
+					callback(database_response);
+				});
+			});
 	},
 
 	queryMetadata : function (request, response){
@@ -152,7 +86,4 @@ module.exports = {
 			response.json(data);
 		});
 	}
-
-
-
 }

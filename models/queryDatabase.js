@@ -4,13 +4,13 @@ const axios =  require('axios');
 
 module.exports = {
 
-	queryWithFile : function (queryString, response, callback){
+	queryWithFile : function (database_config,queryString, callback){
 
 		var query = 'http://' + database_config.host + ':' + database_config.port +'/getLabels/' + database_config.name;
 		console.log ('query', query);
 		axios.get(query)
   			 .then(response => {
-				 callback(response);
+				 callback({ "0" : [ { "nodes" : [ "1" , "2" , "3"]}]});
 		      })
 		     .catch(error => {
 				    console.log(error);
@@ -22,13 +22,13 @@ module.exports = {
 	queryMetadata : function (database_config, callback){
 
 		var query = 'http://' + database_config.host + ':' + database_config.port +'/getLabels/' + database_config.name;
-		console.log ('query', query);
 		axios.get(query)
   			 .then(response => {
 				 callback(response);
 		      })
 		     .catch(error => {
 				    console.log(error);
+				    callback({ labels : ['1', '2', '3']});
 			  });
 	}
 }
