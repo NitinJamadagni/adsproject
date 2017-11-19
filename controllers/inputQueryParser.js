@@ -22,6 +22,8 @@ module.exports = {
 			name : request.body.database_name
 		}
 			
+		console.log(database_config);
+
 		var parsed_data = ""
 		var query_id = Math.random();
 
@@ -63,7 +65,7 @@ module.exports = {
 				console.log ("something went wrong with parsing file creations.");
 
 			// call the model to send the input file.
-			queryDatabase.queryWithFile(database_config, parsed_data,function extractQueryResult(database_response){
+			queryDatabase.queryWithFile(database_config, "queries/" + fileName,function extractQueryResult(database_response){
 					callback(database_response);
 				});
 			});

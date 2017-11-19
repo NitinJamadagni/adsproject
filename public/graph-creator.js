@@ -22,7 +22,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
       shiftNodeDrag: false,
       selectedText: null,
       buttonIsDraw : false,
-      labels : ['a', 'b' , 'c']
+      labels : []
     };
 
 
@@ -140,7 +140,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
           graph_data : JSON.parse(graph_data),
           database_host : d3.select('#database-host').property("value"),
           database_port : d3.select('#database-port').property("value"),
-          datbase_name : d3.select('#database-name').property("value")
+          database_name : d3.select('#database-name').property("value")
       }
 
 
@@ -200,7 +200,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
         $.get('/queryMetadata', {database_host : d3.select('#database-host').property("value"), database_port : d3.select("#database-port").property("value"), database_name : d3.select("#database-name").property("value")} , function (data) { 
           console.log ("the data obatained from get request", data);
 
-          thisGraph.state.labels = data.labels;
+          thisGraph.state.labels = data.response;
 
           //clear the list first
           var myList = document.getElementById('labels');

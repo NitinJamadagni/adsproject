@@ -32,6 +32,11 @@ body{
     z-index: 5;
 }
 
+#label-display{
+  height : 100px;
+  width: 100px;
+}
+
 
 #query-section{
     width: 600px;

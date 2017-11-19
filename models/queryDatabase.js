@@ -1,20 +1,33 @@
 var sys = require('sys');
 var exec = require('child_process').exec;
-const axios =  require('axios'); 
+const axios =  require('axios');
+var FormData = require('form-data');
+var fs =require('fs'); 
 
 module.exports = {
 
-	queryWithFile : function (database_config,queryString, callback){
+	queryWithFile : function (database_config,filename, callback){
 
-		var query = 'http://' + database_config.host + ':' + database_config.port +'/getLabels/' + database_config.name;
+		var query = 'http://' + database_config.host + ':' + database_config.port +'/runQuery/' + database_config.name;
 		console.log ('query', query);
-		axios.get(query)
-  			 .then(response => {
-				 callback({ "0" : [ { "nodes" : [ "1" , "2" , "3"]}]});
-		      })
-		     .catch(error => {
-				    console.log(error);
-			  });
+
+		var form = new FormData();
+		form.append('queryfile' , fs.createReadStream(filename))
+		form.submit(query , function(err,res){
+			
+			callback();
+		});
+
+		// axios.post(query, JSON.parse({file : queryString}))
+  // 			 .then(response => {
+  // 			 	console.log('the response ', response);
+
+		// 		 callback({ "0" : [ { "nodes" : [ "1" , "2" , "3"]}]});
+		//       })
+		//      .catch(error => {
+		//      	console.log("the error");
+		// 		    console.log(error);
+		// 	  });
 		
 
 	},
@@ -24,7 +37,9 @@ module.exports = {
 		var query = 'http://' + database_config.host + ':' + database_config.port +'/getLabels/' + database_config.name;
 		axios.get(query)
   			 .then(response => {
-				 callback(response);
+  			 		console.log(response);
+
+				 callback(response.data);
 		      })
 		     .catch(error => {
 				    console.log(error);
