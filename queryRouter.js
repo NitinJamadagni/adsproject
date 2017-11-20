@@ -5,12 +5,20 @@ var inputQueryController = require('./controllers/inputQueryParser');
 
 //define the routes.
 router.get('/', function (request, response){
-	response.render('index.html');
+	response.render('index');
 });
 
 router.post('/submitQuery', function (request, response){
 	console.log ('the request', request.body);
-	inputQueryController.parseQueryGraph(request,response);
+	inputQueryController.parseQueryGraph(request,response, function (database_response){
+		console.log ('the database_response', database_response);
+		response.json(JSON.parse(database_response));
+	});
+});
+
+// to get all the labels,
+router.get('/queryMetadata', function (request, response){
+	inputQueryController.queryMetadata(request,response);
 });
 
 

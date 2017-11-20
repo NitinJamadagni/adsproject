@@ -32,6 +32,12 @@ body{
     z-index: 5;
 }
 
+#label-display{
+  height : 100px;
+  width: 100px;
+  overflow-y: auto;
+}
+
 
 #query-section{
     width: 600px;
@@ -114,3 +120,65 @@ path.link.hidden{
 path.link.selected {
     stroke: rgb(229, 172, 247);
 }
+
+
+@import "compass/css3";
+
+#list-section {
+  width: 200px;
+  height: 400px;
+  margin: 30px;
+  overflow-y: auto;
+  float:left;
+}
+
+#alchemy{
+  width: 600px;
+  height: 600px;
+  float: right;
+  margin-top: -250px;
+}
+
+
+h2 {
+  font: 400 40px/1.5 Helvetica, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+
+
+#result-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  font: 200 20px/1.5 Helvetica, Verdana, sans-serif;
+  border-bottom: 1px solid #ccc;
+}
+
+li:last-child {
+  border: none;
+}
+
+li a {
+  text-decoration: none;
+  color: #000;
+
+  -webkit-transition: font-size 0.3s ease, background-color 0.3s ease;
+  -moz-transition: font-size 0.3s ease, background-color 0.3s ease;
+  -o-transition: font-size 0.3s ease, background-color 0.3s ease;
+  -ms-transition: font-size 0.3s ease, background-color 0.3s ease;
+  transition: font-size 0.3s ease, background-color 0.3s ease;
+  display: block;
+  width: 200px;
+}
+
+li a:hover {
+  font-size: 30px;
+  background: #f6f6f6;
+}
+
+

@@ -1,0 +1,42 @@
+//- index.pug
+
+doctype html
+html
+ head
+  link(rel="stylesheet", href="graph-creator.css")
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js")
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.16.4/lodash.min.js")
+  script(src="alchemy.js", type="text/javascript")
+ body
+
+  #database
+   label Database Name
+   input#database-name
+   label Database Host 
+   input#database-host
+   label Database Port
+   input#database-port  
+   button(id='connect-database') Connect Database 	
+
+  #label-display
+   ul#labels
+
+  #toolbox
+   button(id='submit-query') Submit Query
+   button(id= 'pointer-drag') Draw
+   button(id='delete-graph') Delete Query
+   input(type='file', id='file-upload')
+   button(id='file-download') Download File
+ 
+  div
+   #query-section
+   #result-section
+    div#list-section
+     h2 Result Matches
+     ul#result-list
+    div(class="alchemy", id='alchemy') 
+
+  script(type="text/javascript", src="//d3js.org/d3.v3.js")
+  script(type="text/javascript", src="//cdn.jsdelivr.net/filesaver.js/0.1/FileSaver.min.js")
+  script(type="text/javascript", src="graph-creator.js")
+  script(type="text/javascript", src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js")

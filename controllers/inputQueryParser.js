@@ -1,4 +1,5 @@
 var fileSystem = require('fs');
+var queryDatabase = require('../models/queryDatabase');
 
 
 function getNodeIndex(nodeId, nodes){
@@ -11,51 +12,80 @@ function getNodeIndex(nodeId, nodes){
 
 
 module.exports = {
-	parseQueryGraph : function (request, response){
+
+	parseQueryGraph : function (request, response , callback){
 		
+		var graph_data = request.body.graph_data;
+		var database_config = {
+			host : request.body.database_host,
+			port : request.body.database_port,
+			name : request.body.database_name
+		}
+			
+		console.log(database_config);
 
-		var graph_data = request.body;
-		var query_id = 1;
+		var parsed_data = ""
+		var query_id = Math.random();
 
-		var query_stream = fileSystem.createWriteStream("query_"+query_id+".txt");
-
-		query_stream.once('open', function(fd){
-			query_stream.write("#query"+query_id);
-			query_stream.end();
-		});
-
+		parsed_data += "#query_" + query_id +  "\n";
+		fileName = "#query_" + query_id;
 
 		var nodes = graph_data.nodes;
 		var edges = graph_data.edges;
 
-
-		
-		
 		// write the number od nodes to the file
 		var nodes_length = nodes.length;
-		
+		parsed_data += nodes_length + "\n";
 
-		for (var index = 0; index < nodes; index++){
+
+		for (var index = 0; index < nodes_length; index++){
 			var node = nodes[index];
 			var node_name = node.title;
 
+			parsed_data += node_name + "\n";
 
 		}
 
-		//write number of edges to the file
-		var edges_length = edges_length;
+		// write number of edges to the file
+		var edges_length = edges.length;
+		parsed_data += edges_length + "\n";
 
-
-		for (var index = 0; index < edges; index++){
+		for (var index = 0; index < edges_length; index++){
 			var edge  = edges[index];
 			var from_edge = getNodeIndex(edge.source, nodes);
 			var to_edge = getNodeIndex(edge.target, nodes);
 
 			// write the from_edge and to_edge to the file.
+			parsed_data += from_edge + ' ' + to_edge + '\n';
 
 		}
 
-		console.log ("done");
+		fileSystem.writeFile("queries/" + fileName, parsed_data, function(err){
+			if (err)
+				console.log ("something went wrong with parsing file creations.");
 
+			// call the model to send the input file.
+			queryDatabase.queryWithFile(database_config, "queries/" + fileName,function extractQueryResult(database_response){
+					callback(database_response);
+				});
+			});
+	},
+
+	queryMetadata : function (request, response){
+
+
+		var database_host = request.query.database_host;
+		var database_port = request.query.database_port;
+		var database_name = request.query.database_name;
+
+		var database_config = {
+			host : database_host,
+			port : database_port,
+			name : database_name
+		}
+
+		queryDatabase.queryMetadata(database_config, function (data){
+			response.json(data);
+		});
 	}
 }

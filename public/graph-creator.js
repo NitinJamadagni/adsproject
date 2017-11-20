@@ -20,7 +20,10 @@ document.onload = (function(d3, saveAs, Blob, undefined){
       shiftNodeDrag: false,
       selectedText: null,
       buttonIsDraw : false,
+      labels : [],
+      response: {}
     };
+
 
     // define arrow markers for graph links
     var defs = svg.append('svg:defs');
@@ -111,6 +114,18 @@ document.onload = (function(d3, saveAs, Blob, undefined){
 
     // submit the query.
     d3.select("#submit-query").on("click", function(){
+
+
+      //verify at submission all the nodes have the appropriate labels.
+      for (var index = 0; index < thisGraph.nodes.length; index++){
+        var node = thisGraph.nodes[index];
+        if (node.title == 'NEW NODE'){
+          alert("Error in query graph node labels ");
+          return;
+        }
+      }
+
+
       var saveEdges = [];
       thisGraph.edges.forEach(function(val, i){
         saveEdges.push({source: val.source.id, target: val.target.id});
@@ -120,18 +135,156 @@ document.onload = (function(d3, saveAs, Blob, undefined){
       var graph_data = window.JSON.stringify({"nodes": thisGraph.nodes, "edges": saveEdges})
       console.log (graph_data);
 
+      var request_data = {
+          graph_data : JSON.parse(graph_data),
+          database_host : d3.select('#database-host').property("value"),
+          database_port : d3.select('#database-port').property("value"),
+          database_name : d3.select('#database-name').property("value")
+      }
+
+
       //TODO : ajax call to the backend /query/database with the graph_data
       $.ajax({
-            url: '/query/submitQuery',
+            url: '/submitQuery',
             type: 'post',
             dataType: 'json',
             success: function (data) {
-               console.log ('done');
+                
+                  thisGraph.state.response = data.response.output;
+
+                  //clear the list first
+                  var myList = document.getElementById('result-list');
+                  myList.innerHTML = '';
+
+
+                  for (var graph_id in thisGraph.state.response){
+                      var graphs = thisGraph.state.response[graph_id];
+
+                      var count = 1;
+                      for (var graph in graphs){
+                        
+                        var ul = document.getElementById("result-list");
+                        var li = document.createElement("li");
+                        var a = document.createElement("a");
+
+                        a.setAttribute('id', graph_id + '_' + (count - 1));
+                        a.setAttribute('href', '#');
+                        a.addEventListener('click', function (){
+                            console.log ('this ', this);
+                            var ids = this.getAttribute('id').split('_');
+                            var database_id_clicked = ids[0];
+                            var graph_id_clicked = ids[1];
+
+
+
+                            var alchemy_div = document.getElementById('alchemy');
+                            alchemy_div.innerHTML = "";
+
+                            var config = {
+                                    dataSource: thisGraph.state.response[database_id_clicked][graph_id_clicked],
+                                    zoomControls : false,
+                                    forceLocked: false,
+                                    graphHeight: function(){ return 400; },
+                                    graphWidth: function(){ return 400; },      
+                                    linkDistance: function(){ return 40; },
+                                    nodeTypes: {"node_type":[ "Maintainer",
+                                                              "Contributor"]},
+                                    nodeCaption: function(node){ 
+                                      return node.caption + " " + node.fun_fact;}
+                                    };
+
+                            alchemy = new Alchemy(config)  
+
+                            // once  you get this id, use to extract the graph_id and the graph number from the response to update the data source of the alchemy.
+                        });
+                        a.appendChild(document.createTextNode("Graph " + count++));
+                        
+                        li.appendChild(a);
+                        ul.appendChild(li);
+                      }
+
+                      //update the div.
+
+
+
+                  }
             },
-            data: JSON.parse(graph_data)
+            data: request_data
         });
 
     });
+
+    // SEND The metadata information
+    d3.select('#connect-database').on("click", function (){
+
+        $.get('/queryMetadata', {database_host : d3.select('#database-host').property("value"), database_port : d3.select("#database-port").property("value"), database_name : d3.select("#database-name").property("value")} , function (data) { 
+          console.log ("the data obatained from get request", data);
+
+          thisGraph.state.labels = data.response;
+
+          //clear the list first
+          var myList = document.getElementById('labels');
+          myList.innerHTML = '';
+
+          //display labels 
+          for (var label = 0; label  < thisGraph.state.labels.length; label++){
+                  var ul = document.getElementById("labels");
+                  var li = document.createElement("li");
+                  li.setAttribute('id', label );
+                  li.appendChild(document.createTextNode(thisGraph.state.labels[label]));
+                  ul.appendChild(li);
+          }
+
+        });
+    });
+
+
+    d3.select("#file-upload").on("click", function(){
+      if (window.File && window.FileReader && window.FileList && window.Blob) {
+        var uploadFile = this.files[0];
+        var filereader = new window.FileReader();
+        
+        filereader.onload = function(){
+          var txtRes = filereader.result;
+          // TODO better error handling
+          try{
+            var jsonObj = JSON.parse(txtRes);
+            thisGraph.deleteGraph(true);
+            thisGraph.nodes = jsonObj.nodes;
+            thisGraph.setIdCt(jsonObj.nodes.length + 1);
+            var newEdges = jsonObj.edges;
+            newEdges.forEach(function(e, i){
+              newEdges[i] = {source: thisGraph.nodes.filter(function(n){return n.id == e.source;})[0],
+                          target: thisGraph.nodes.filter(function(n){return n.id == e.target;})[0]};
+            });
+            thisGraph.edges = newEdges;
+            thisGraph.updateGraph();
+          }catch(err){
+            window.alert("Error parsing uploaded file\nerror message: " + err.message);
+            return;
+          }
+        };
+        filereader.readAsText(uploadFile);
+        
+      } else {
+        alert("Your browser won't let you save this graph -- try upgrading your browser to IE 10+ or Chrome or Firefox.");
+      }
+
+    });
+
+
+
+    d3.select('#file-download').on('click', function (){
+
+      var saveEdges = [];
+      thisGraph.edges.forEach(function(val, i){
+        saveEdges.push({source: val.source.id, target: val.target.id});
+      });
+
+      var blob = new Blob([window.JSON.stringify({"nodes": thisGraph.nodes, "edges": saveEdges})], {type: "text/plain;charset=utf-8"});
+      saveAs(blob, "mydag.json");
+    });
+
 
 
     d3.select("#pointer-drag").on("click", function (){
@@ -145,9 +298,9 @@ document.onload = (function(d3, saveAs, Blob, undefined){
       thisGraph.deleteGraph(false);
     });
 
-
-
   };
+
+
 
   GraphCreator.prototype.setIdCt = function(idct){
     this.idct = idct;
@@ -243,6 +396,8 @@ document.onload = (function(d3, saveAs, Blob, undefined){
     if (thisGraph.state.selectedNode){
       thisGraph.removeSelectFromNode();
     }
+
+
     thisGraph.state.selectedNode = nodeData;
   };
   
@@ -305,6 +460,9 @@ document.onload = (function(d3, saveAs, Blob, undefined){
         curScale = nodeBCR.width/consts.nodeRadius,
         placePad  =  5*curScale,
         useHW = curScale > 1 ? nodeBCR.width*0.71 : consts.nodeRadius*1.42;
+
+        console.log ("the d.title ", d.title);
+
     // replace with editableconent text
     var d3txt = thisGraph.svg.selectAll("foreignObject")
           .data([d])
@@ -328,7 +486,16 @@ document.onload = (function(d3, saveAs, Blob, undefined){
             }
           })
           .on("blur", function(d){
-            d.title = this.textContent;
+
+
+            //check if the label is part of the state.labels
+            if (thisGraph.state.labels.includes(this.textContent)){
+              d.title = this.textContent;
+              
+            }else{
+              console.log ('the slected ', d3node);
+            }
+
             thisGraph.insertTitleLinebreaks(d3node, d.title);
             d3.select(this.parentElement).remove();
           });
@@ -555,15 +722,14 @@ document.onload = (function(d3, saveAs, Blob, undefined){
 
 
 
-
-
-
   /**** MAIN ****/
 
   // warn the user when leaving
   window.onbeforeunload = function(){
     return "Make sure to save your graph locally before leaving :-)";
   };      
+
+  console.log ("this script is called");
 
   var docEl = document.documentElement,
       bodyEl = document.getElementsByTagName('body')[0];
@@ -585,15 +751,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
         .attr("width", "600")
         .attr("height", "600");
 
-  // define an svg for the result.      
-  var svg2 = d3.select("#result-section").append("svg")
-        .attr("width", "600")
-        .attr("height", "600");
 
-
-  var result_graph = new GraphCreator(svg2,nodes,edges);
-  result_graph.setIdCt(2);
-  result_graph.updateGraph();
 
   var graph = new GraphCreator(svg, nodes, edges);
   graph.setIdCt(2);
