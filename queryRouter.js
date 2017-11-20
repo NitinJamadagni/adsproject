@@ -11,7 +11,8 @@ router.get('/', function (request, response){
 router.post('/submitQuery', function (request, response){
 	console.log ('the request', request.body);
 	inputQueryController.parseQueryGraph(request,response, function (database_response){
-		response.json(database_response);
+		console.log ('the database_response', database_response);
+		response.json(JSON.parse(database_response));
 	});
 });
 

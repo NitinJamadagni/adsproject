@@ -9,8 +9,6 @@ document.onload = (function(d3, saveAs, Blob, undefined){
     thisGraph.nodes = nodes || [];
     thisGraph.edges = edges || [];
     
-    thisGraph.response = {};
-    
     thisGraph.state = {
       selectedNode: null,
       selectedEdge: null,
@@ -22,7 +20,8 @@ document.onload = (function(d3, saveAs, Blob, undefined){
       shiftNodeDrag: false,
       selectedText: null,
       buttonIsDraw : false,
-      labels : []
+      labels : [],
+      response: {}
     };
 
 
@@ -151,7 +150,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
             dataType: 'json',
             success: function (data) {
                 
-                  thisGraph.response = data;
+                  thisGraph.response = data.response.output;
 
                   //clear the list first
                   var myList = document.getElementById('result-list');
