@@ -150,15 +150,15 @@ document.onload = (function(d3, saveAs, Blob, undefined){
             dataType: 'json',
             success: function (data) {
                 
-                  thisGraph.response = data.response.output;
+                  thisGraph.state.response = data.response.output;
 
                   //clear the list first
                   var myList = document.getElementById('result-list');
                   myList.innerHTML = '';
 
 
-                  for (var graph_id in thisGraph.response){
-                      var graphs = thisGraph.response[graph_id];
+                  for (var graph_id in thisGraph.state.response){
+                      var graphs = thisGraph.state.response[graph_id];
 
                       var count = 1;
                       for (var graph in graphs){
@@ -171,6 +171,30 @@ document.onload = (function(d3, saveAs, Blob, undefined){
                         a.setAttribute('href', '#');
                         a.addEventListener('click', function (){
                             console.log ('this ', this);
+                            var ids = this.getAttribute('id').split('_');
+                            var database_id_clicked = ids[0];
+                            var graph_id_clicked = ids[1];
+
+
+
+                            var alchemy_div = document.getElementById('alchemy');
+                            alchemy_div.innerHTML = "";
+
+                            var config = {
+                                    dataSource: thisGraph.state.response[database_id_clicked][graph_id_clicked],
+                                    zoomControls : false,
+                                    forceLocked: false,
+                                    graphHeight: function(){ return 400; },
+                                    graphWidth: function(){ return 400; },      
+                                    linkDistance: function(){ return 40; },
+                                    nodeTypes: {"node_type":[ "Maintainer",
+                                                              "Contributor"]},
+                                    nodeCaption: function(node){ 
+                                      return node.caption + " " + node.fun_fact;}
+                                    };
+
+                            alchemy = new Alchemy(config)  
+
                             // once  you get this id, use to extract the graph_id and the graph number from the response to update the data source of the alchemy.
                         });
                         a.appendChild(document.createTextNode("Graph " + count++));
@@ -178,6 +202,11 @@ document.onload = (function(d3, saveAs, Blob, undefined){
                         li.appendChild(a);
                         ul.appendChild(li);
                       }
+
+                      //update the div.
+
+
+
                   }
             },
             data: request_data

@@ -4,6 +4,9 @@ doctype html
 html
  head
   link(rel="stylesheet", href="graph-creator.css")
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js")
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.16.4/lodash.min.js")
+  script(src="alchemy.js", type="text/javascript")
  body
 
   #database
@@ -29,8 +32,9 @@ html
    #query-section
    #result-section
     div#list-section
-     h2 Results Match
+     h2 Result Matches
      ul#result-list
+    div(class="alchemy", id='alchemy') 
 
   script(type="text/javascript", src="//d3js.org/d3.v3.js")
   script(type="text/javascript", src="//cdn.jsdelivr.net/filesaver.js/0.1/FileSaver.min.js")

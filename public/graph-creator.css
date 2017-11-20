@@ -35,6 +35,7 @@ body{
 #label-display{
   height : 100px;
   width: 100px;
+  overflow-y: auto;
 }
 
 
@@ -125,8 +126,19 @@ path.link.selected {
 
 #list-section {
   width: 200px;
+  height: 400px;
   margin: 30px;
+  overflow-y: auto;
+  float:left;
 }
+
+#alchemy{
+  width: 600px;
+  height: 600px;
+  float: right;
+  margin-top: -250px;
+}
+
 
 h2 {
   font: 400 40px/1.5 Helvetica, Verdana, sans-serif;
@@ -134,7 +146,9 @@ h2 {
   padding: 0;
 }
 
-#esult-list {
+
+
+#result-list {
   list-style-type: none;
   margin: 0;
   padding: 0;
