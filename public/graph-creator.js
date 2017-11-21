@@ -240,6 +240,8 @@ document.onload = (function(d3, saveAs, Blob, undefined){
                   ul.appendChild(li);
           }
 
+          d3.select('#label-display').style('display', 'block');
+
         });
     });
 
@@ -748,6 +750,8 @@ document.onload = (function(d3, saveAs, Blob, undefined){
   var nodes = [{title: "NEW NODE", id: 0, x: xLoc, y: yLoc},
                {title: "NEW NODE", id: 1, x: xLoc, y: yLoc + 200}];
   var edges = [{source: nodes[1], target: nodes[0]}];
+
+  d3.select("#label-display").style('display', 'none');
 
 
   /** MAIN SVG **/
