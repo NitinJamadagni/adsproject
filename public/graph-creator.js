@@ -22,7 +22,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
       buttonIsDraw : false,
       labels : [],
       response: {},
-      stats: [],
+      stats: {},
       database_name_select: "",
     };
 
@@ -119,6 +119,9 @@ document.onload = (function(d3, saveAs, Blob, undefined){
     d3.select("#submit-query").on("click", function(){
 
 
+      var alchemy_div = document.getElementById('alchemy');
+      alchemy_div.innerHTML = "";
+
       //verify at submission all the nodes have the appropriate labels.
       for (var index = 0; index < thisGraph.nodes.length; index++){
         var node = thisGraph.nodes[index];
@@ -161,6 +164,11 @@ document.onload = (function(d3, saveAs, Blob, undefined){
                   myList.innerHTML = '';
 
 
+                  if (thisGraph.state.stats.Candidates_Count == '0'){
+                    myList.innerHTML = '<li> No matching results found in the database </li>'; 
+                  }
+
+
                   for (var graph_id in thisGraph.state.response){
                       var graphs = thisGraph.state.response[graph_id];
 
@@ -199,7 +207,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
 
                             // once  you get this id, use to extract the graph_id and the graph number from the response to update the data source of the alchemy.
                         });
-                        a.appendChild(document.createTextNode("Graph " + count++));
+                        a.appendChild(document.createTextNode("Graph " + graph_id));
                         
                         li.appendChild(a);
                         ul.appendChild(li);
@@ -244,7 +252,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
         $.get('/queryMetadata', {database_host : d3.select('#database-host').property("value"), database_port : d3.select("#database-port").property("value"), database_name : d3.select("#database-name-select").property("value")} , function (data) { 
           console.log ("the data obatained from get request", data);
 
-          if (data.response.status == "success"){
+         
 
             thisGraph.state.labels = data.response;
             thisGraph.state.database_name_select = d3.select("#database-name-select").property("value");
@@ -265,7 +273,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
             }
 
             d3.select('#label-display').style('display', 'block');
-          }
+          
 
         });
     });
