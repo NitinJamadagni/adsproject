@@ -112,6 +112,11 @@ document.onload = (function(d3, saveAs, Blob, undefined){
     // listen for resize
     window.onresize = function(){thisGraph.updateWindow(svg);};
 
+
+
+
+
+
     // submit the query.
     d3.select("#submit-query").on("click", function(){
 
@@ -235,6 +240,8 @@ document.onload = (function(d3, saveAs, Blob, undefined){
                   ul.appendChild(li);
           }
 
+          d3.select('#label-display').style('display', 'block');
+
         });
     });
 
@@ -271,7 +278,6 @@ document.onload = (function(d3, saveAs, Blob, undefined){
       }
 
     });
-
 
 
     d3.select('#file-download').on('click', function (){
@@ -716,7 +722,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
         bodyEl = document.getElementsByTagName('body')[0];
     var x = window.innerWidth || docEl.clientWidth || bodyEl.clientWidth;
     var y = window.innerHeight|| docEl.clientHeight|| bodyEl.clientHeight;
-    svg.attr("width", x).attr("height", y);
+    svg.attr("width", "600").attr("height", "600");
   };
 
 
@@ -745,6 +751,8 @@ document.onload = (function(d3, saveAs, Blob, undefined){
                {title: "NEW NODE", id: 1, x: xLoc, y: yLoc + 200}];
   var edges = [{source: nodes[1], target: nodes[0]}];
 
+  d3.select("#label-display").style('display', 'none');
+
 
   /** MAIN SVG **/
   var svg = d3.select("#query-section").append("svg")
@@ -758,3 +766,18 @@ document.onload = (function(d3, saveAs, Blob, undefined){
   graph.updateGraph();
 
 })(window.d3, window.saveAs, window.Blob);
+
+
+// Side bar navigation.
+function openNav() {
+    document.getElementById("mySideNav").style.width = "250px";
+}
+
+function closeNav() {
+    document.getElementById("mySideNav").style.width = "0";
+}
+
+
+
+
+
