@@ -21,7 +21,8 @@ document.onload = (function(d3, saveAs, Blob, undefined){
       selectedText: null,
       buttonIsDraw : false,
       labels : [],
-      response: {}
+      response: {},
+      stats: [],
     };
 
 
@@ -156,6 +157,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
             success: function (data) {
                 
                   thisGraph.state.response = data.response.output;
+                  thisGraph.state.stats = data.response.stats;
 
                   //clear the list first
                   var myList = document.getElementById('result-list');
@@ -179,8 +181,6 @@ document.onload = (function(d3, saveAs, Blob, undefined){
                             var ids = this.getAttribute('id').split('_');
                             var database_id_clicked = ids[0];
                             var graph_id_clicked = ids[1];
-
-
 
                             var alchemy_div = document.getElementById('alchemy');
                             alchemy_div.innerHTML = "";
@@ -209,7 +209,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
                       }
 
                       //update the div.
-
+                      console.log ('the stats are ', thisGraph.state.stats);
 
 
                   }
@@ -246,9 +246,16 @@ document.onload = (function(d3, saveAs, Blob, undefined){
     });
 
 
-    d3.select("#file-upload").on("click", function(){
+    d3.select("#upload-input").on("click", function(){
+      document.getElementById("file-upload").click();
+    });
+
+
+    d3.select("#file-upload").on("change", function(){
       if (window.File && window.FileReader && window.FileList && window.Blob) {
         var uploadFile = this.files[0];
+        console.log ('the upload file ', uploadFile);
+
         var filereader = new window.FileReader();
         
         filereader.onload = function(){
@@ -292,12 +299,17 @@ document.onload = (function(d3, saveAs, Blob, undefined){
     });
 
 
-
     d3.select("#pointer-drag").on("click", function (){
-      thisGraph.state.buttonIsDraw  = !thisGraph.state.buttonIsDraw;
-      console.log ('buttonIsDraw', thisGraph.state.buttonIsDraw);
+      thisGraph.state.buttonIsDraw  = true;
+      console.log ('buttonIsDraw pointer-drag', thisGraph.state.buttonIsDraw);
     });
 
+
+    d3.select("#query-drag").on("click", function() {
+
+      thisGraph.state.buttonIsDraw = false;
+      console.log ('buttonIsDraw query-drag', thisGraph.state.buttonIsDraw);
+    });
 
     // handle delete graph
     d3.select("#delete-graph").on("click", function(){

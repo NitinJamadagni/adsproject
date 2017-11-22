@@ -28,7 +28,8 @@ html
 
   #toolbox
    button(id='submit-query') Submit Query
-   button(id= 'pointer-drag') Draw
+   button(id='pointer-drag') Draw / Edit
+   button(id='query-drag') Drag / Delete
    button(id='delete-graph') Delete Query
    input(type='file', id='file-upload')
    button(id='file-download') Download File
@@ -40,8 +41,12 @@ html
      h3 Result Matches
      ul#result-list
     div(class="alchemy", id='alchemy') 
+  #chart-section
+
 
   script(type="text/javascript", src="//d3js.org/d3.v3.js")
   script(type="text/javascript", src="//cdn.jsdelivr.net/filesaver.js/0.1/FileSaver.min.js")
   script(type="text/javascript", src="graph-creator.js")
   script(type="text/javascript", src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js")
+  script(type="text/javascript", src="https://code.highcharts.com/highcharts.js")
+  script(type="text/javascript", src="https://code.highcharts.com/modules/histogram-bellcurve.js")
