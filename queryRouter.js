@@ -8,6 +8,13 @@ router.get('/', function (request, response){
 	response.render('index');
 });
 
+
+router.get('/database', function (request, response){
+	inputQueryController.databases(request,response, function(databases){
+		response.json(JSON.parse(databases));
+	});
+});
+
 router.post('/submitQuery', function (request, response){
 	console.log ('the request', request.body);
 	inputQueryController.parseQueryGraph(request,response, function (database_response){

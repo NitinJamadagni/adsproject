@@ -18,22 +18,27 @@ html
     div(class='form-style-6')
      h1 Database Settings
      form
-      input(type='text', id='database-name', placeholder='Database Name')
       input(type='text', id='database-host', placeholder='Database Host')
       input(type='text', id='database-port', placeholder='Database Port') 
+      select(id='database-name-select', placeholder ='Database Names')
+       option(value="", selected='true') Select Database
+      input(type='button', id='find-database', value ='Find Databases')
       input(type='button', id='connect-database', value='Connect Database')
 
+    p
+    p
+
+    div(class='form-style-6')
+     h1 Database Information
+     form
+      input(type='text', id='database-host-connected', placeholder='Database Host Connected ')
+      
+
   #label-display(class='scrollmenu')
+   p(id='label-display-title') Node Labels 
    ul#labels
 
-  #toolbox
-   button(id='submit-query') Submit Query
-   button(id='pointer-drag') Draw / Edit
-   button(id='query-drag') Drag / Delete
-   button(id='delete-graph') Delete Query
-   input(type='file', id='file-upload')
-   button(id='file-download') Download File
- 
+
   div
    #query-section
    #result-section
@@ -43,6 +48,14 @@ html
     div(class="alchemy", id='alchemy') 
   #chart-section
 
+  #toolbox
+   button(id='submit-query') Submit Query
+   button(id='pointer-drag') Draw / Edit
+   button(id='query-drag') Drag / Delete
+   button(id='delete-graph') Delete Query
+   input(type='file', id='file-upload')
+   button(id='file-download') Download File
+ 
 
   script(type="text/javascript", src="//d3js.org/d3.v3.js")
   script(type="text/javascript", src="//cdn.jsdelivr.net/filesaver.js/0.1/FileSaver.min.js")

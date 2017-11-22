@@ -1,7 +1,7 @@
 body{
     margin: 0;
     padding: 0;
-    overflow:hidden;
+    overflow:auto;
 }
 
 p{ 
@@ -37,10 +37,14 @@ body{
 }
 
 #label-display{
-  height : 100px;
+  height : 150px;
   width: 100%;
-  overflow-y: auto;
 }
+
+#labels{
+  overflow-x: auto;
+}
+
 
 
 #query-section{
@@ -316,6 +320,13 @@ li a:hover {
 .form-style-6 input[type="button"]:hover{
     background: #2EBC99;
 }
+
+#find-database {
+  margin-bottom: 10px;
+}
+
+
+
 
 /* Labels Menu */
 div.scrollmenu {

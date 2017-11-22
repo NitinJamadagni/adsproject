@@ -87,5 +87,27 @@ module.exports = {
 		queryDatabase.queryMetadata(database_config, function (data){
 			response.json(data);
 		});
+	},
+
+	databases : function (request ,response){
+
+
+		var database_host = request.query.database_host;
+		var database_port = request.query.database_port;
+		
+
+		var database_config = {
+			host : database_host,
+			port : database_port,
+		}
+
+		queryDatabase.databases(database_config, function (data){
+			response.json(data);
+		});
+
+
 	}
+
+
+
 }

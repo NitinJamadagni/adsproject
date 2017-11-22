@@ -23,6 +23,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
       labels : [],
       response: {},
       stats: [],
+      database_name_select: "",
     };
 
 
@@ -114,10 +115,6 @@ document.onload = (function(d3, saveAs, Blob, undefined){
     window.onresize = function(){thisGraph.updateWindow(svg);};
 
 
-
-
-
-
     // submit the query.
     d3.select("#submit-query").on("click", function(){
 
@@ -145,7 +142,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
           graph_data : JSON.parse(graph_data),
           database_host : d3.select('#database-host').property("value"),
           database_port : d3.select('#database-port').property("value"),
-          database_name : d3.select('#database-name').property("value")
+          database_name : thisGraph.state.database_name_select
       }
 
 
@@ -219,28 +216,56 @@ document.onload = (function(d3, saveAs, Blob, undefined){
 
     });
 
+
+    // query the available database names
+    d3.select('#find-database').on("click", function () {
+      console.log ('the databsae find');
+        $.get('/database', {database_host : d3.select('#database-host').property("value"), database_port : d3.select("#database-port").property("value")} , function (data){
+            var names = data.response;
+            console.log ('the response ', data.response);
+
+            var datbase_names_select = document.getElementById('database-name-select');
+
+            for (var name in names){
+              console.log ("the name  is ", name);
+              var opt = document.createElement('option');
+              opt.value = names[name];
+              opt.innerHTML = names[name];
+              datbase_names_select.appendChild(opt);
+            }
+        });
+    });
+
+
+
     // SEND The metadata information
     d3.select('#connect-database').on("click", function (){
 
-        $.get('/queryMetadata', {database_host : d3.select('#database-host').property("value"), database_port : d3.select("#database-port").property("value"), database_name : d3.select("#database-name").property("value")} , function (data) { 
+        $.get('/queryMetadata', {database_host : d3.select('#database-host').property("value"), database_port : d3.select("#database-port").property("value"), database_name : d3.select("#database-name-select").property("value")} , function (data) { 
           console.log ("the data obatained from get request", data);
 
-          thisGraph.state.labels = data.response;
+          if (data.response.status == "success"){
 
-          //clear the list first
-          var myList = document.getElementById('labels');
-          myList.innerHTML = '';
+            thisGraph.state.labels = data.response;
+            thisGraph.state.database_name_select = d3.select("#database-name-select").property("value");
 
-          //display labels 
-          for (var label = 0; label  < thisGraph.state.labels.length; label++){
-                  var ul = document.getElementById("labels");
-                  var li = document.createElement("li");
-                  li.setAttribute('id', label );
-                  li.appendChild(document.createTextNode(thisGraph.state.labels[label]));
-                  ul.appendChild(li);
+            d3.select ('#database-host-connected').attr("value", d3.select("#database-name-select").property("value"));
+
+            //clear the list first
+            var myList = document.getElementById('labels');
+            myList.innerHTML = '';
+
+            //display labels 
+            for (var label = 0; label  < thisGraph.state.labels.length; label++){
+                    var ul = document.getElementById("labels");
+                    var li = document.createElement("li");
+                    li.setAttribute('id', label );
+                    li.appendChild(document.createTextNode(thisGraph.state.labels[label]));
+                    ul.appendChild(li);
+            }
+
+            d3.select('#label-display').style('display', 'block');
           }
-
-          d3.select('#label-display').style('display', 'block');
 
         });
     });
@@ -772,7 +797,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
         .attr("height", "600");
 
 
-
+   // extract the database names
   var graph = new GraphCreator(svg, nodes, edges);
   graph.setIdCt(2);
   graph.updateGraph();
