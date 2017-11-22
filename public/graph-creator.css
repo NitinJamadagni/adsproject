@@ -20,6 +20,10 @@ body{
     background-color: #4c93ef;
 }
 
+#database{
+  margin: 20px;
+}
+
 #toolbox{
     /*position: absolute;*/
     bottom: 0;
@@ -159,6 +163,7 @@ h2 {
   margin: 0;
   padding: 0;
   overflow-y: auto;
+  height: 600px;
 }
 
 li {
