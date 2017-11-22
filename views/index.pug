@@ -4,6 +4,7 @@ doctype html
 html
  head
   link(rel="stylesheet", href="graph-creator.css")
+  link(rel="stylesheet" , href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css")
   script(src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js")
   script(src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.16.4/lodash.min.js")
   script(src="alchemy.js", type="text/javascript")
@@ -22,11 +23,13 @@ html
    ul#labels
 
   #toolbox
-   button(id='submit-query') Submit Query
-   button(id= 'pointer-drag') Draw
-   button(id='delete-graph') Delete Query
-   input(type='file', id='file-upload')
-   button(id='file-download') Download File
+   div(class="btn-group")
+    button(id='submit-query' type="button" class="btn btn-primary") Submit Query
+    button(id= 'pointer-drag' type="button" class="btn btn-primary") Draw
+    button(id='delete-graph' type="button" class="btn btn-primary") Delete Query
+    button(id='file-download' type="button" class="btn btn-primary") Download File
+    input(type='file', id='file-upload')
+   
  
   div
    #query-section
