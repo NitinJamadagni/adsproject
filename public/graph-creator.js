@@ -115,6 +115,11 @@ document.onload = (function(d3, saveAs, Blob, undefined){
     window.onresize = function(){thisGraph.updateWindow(svg);};
 
 
+
+
+
+
+
     // submit the query.
     d3.select("#submit-query").on("click", function(){
 
@@ -307,6 +312,15 @@ Highcharts.chart('chart-section', {
 
             d3.select ('#database-host-connected').attr("value", d3.select("#database-name-select").property("value"));
 
+            document.getElementById('closeBtn').click();
+
+            d3.select('#note').style('display', 'block');
+            
+            d3.select ("#close").on('click', function (){
+              d3.select('#note').style('display', 'none');
+            });
+
+        
             //clear the list first
             var myList = document.getElementById('labels');
             myList.innerHTML = '';
@@ -321,6 +335,9 @@ Highcharts.chart('chart-section', {
             }
 
             d3.select('#label-display').style('display', 'block');
+
+
+
           
 
         });

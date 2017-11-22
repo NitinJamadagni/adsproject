@@ -15,7 +15,7 @@ html
     img(src='settings.png', width='30px', height='30px') 
 
    div(id='mySideNav', class='sidenav')
-    a(href='javascript:void(0)', class='closebtn', onClick='closeNav()') &times;
+    a(href='javascript:void(0)', class='closebtn', onClick='closeNav()',id='closeBtn') &times;
     div(class='form-style-6')
      h1 Database Settings
      form
@@ -58,6 +58,10 @@ html
   #chart-section
 
   
+  #note
+   Database Connected
+   a(id='close') [close]
+
 
   script(type="text/javascript", src="//d3js.org/d3.v3.js")
   script(type="text/javascript", src="//cdn.jsdelivr.net/filesaver.js/0.1/FileSaver.min.js")
