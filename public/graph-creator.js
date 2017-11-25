@@ -24,6 +24,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
       response: {},
       stats: {},
       database_name_select: "",
+      databaseConnected : false,
     };
 
 
@@ -113,6 +114,9 @@ document.onload = (function(d3, saveAs, Blob, undefined){
 
     // listen for resize
     window.onresize = function(){thisGraph.updateWindow(svg);};
+
+
+
 
 
 
@@ -221,55 +225,60 @@ document.onload = (function(d3, saveAs, Blob, undefined){
                   }
 
                   // Build the chart
-Highcharts.chart('chart-section', {
-    chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false,
-        type: 'pie'
-    },
-    title: {
-        text: 'Browser market shares January, 2015 to May, 2015'
-    },
-    tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-    },
-    plotOptions: {
-        pie: {
-            allowPointSelect: true,
-            cursor: 'pointer',
-            dataLabels: {
-                enabled: false
-            },
-            showInLegend: true
-        }
-    },
-    series: [{
-        name: 'Brands',
-        colorByPoint: true,
-        data: [{
-            name: 'Microsoft Internet Explorer',
-            y: thisGraph.state.stats.DB_Load_time
-        }, {
-            name: 'Chrome',
-            y: 24.03,
-            sliced: true,
-            selected: true
-        }, {
-            name: 'Firefox',
-            y: 10.38
-        }, {
-            name: 'Safari',
-            y: 4.77
-        }, {
-            name: 'Opera',
-            y: 0.91
-        }, {
-            name: 'Proprietary or Undetectable',
-            y: 0.2
-        }]
-    }]
-});
+                        // TESGING 
+                    var statistics = thisGraph.state.stats;
+
+                    var load_time_percentage = (statistics.DB_Load_Time / statistics.Total_Time ) * 100;
+                    var filtering_time_percentage = (statistics.Filtering_Time / statistics.Total_Time) * 100;
+                    var matching_time_percentage = (statistics.Matching_Time / statistics.Total_Time) * 100;
+                    var query_build_time_percentage  = (statistics.Query_Build_time / statistics.Total_Time) * 100;
+
+
+                    Highcharts.chart('chart-section', {
+                    chart: {
+                        plotBackgroundColor: null,
+                        plotBorderWidth: null,
+                        plotShadow: false,
+                        type: 'pie',
+                        height: 500,
+                        width: 500
+                    },
+                    title: {
+                        text: 'Database Stats'
+                    },
+                    tooltip: {
+                        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                    },
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: false
+                            },
+                            showInLegend: true
+                        }
+                    },
+                    series: [{
+                        name: 'Database operation',
+                        colorByPoint: true,
+                        data: [{
+                            name: 'Database Load Time',
+                            y: parseFloat(load_time_percentage)
+                        }, {
+                            name: 'Filtering Time',
+                            y: parseFloat(filtering_time_percentage),
+                            sliced: true,
+                            selected: true
+                        }, {
+                            name: 'Matching Time',
+                            y: parseFloat(matching_time_percentage)
+                        }, {
+                            name: 'Query Build Time',
+                            y: parseFloat(query_build_time_percentage)
+                        }]
+                    }]
+                });
 
             },
             data: request_data
@@ -302,13 +311,15 @@ Highcharts.chart('chart-section', {
     // SEND The metadata information
     d3.select('#connect-database').on("click", function (){
 
-        $.get('/queryMetadata', {database_host : d3.select('#database-host').property("value"), database_port : d3.select("#database-port").property("value"), database_name : d3.select("#database-name-select").property("value")} , function (data) { 
-          console.log ("the data obatained from get request", data);
+        if (thisGraph.state.databaseConnected){
+            d3.select('#warning').style('display', 'block');
+        }
 
-         
+        $.get('/queryMetadata', {database_host : d3.select('#database-host').property("value"), database_port : d3.select("#database-port").property("value"), database_name : d3.select("#database-name-select").property("value")} , function (data) { 
 
             thisGraph.state.labels = data.response;
             thisGraph.state.database_name_select = d3.select("#database-name-select").property("value");
+            thisGraph.state.databaseConnected = true;
 
             d3.select ('#database-host-connected').attr("value", d3.select("#database-name-select").property("value"));
 
@@ -320,7 +331,11 @@ Highcharts.chart('chart-section', {
               d3.select('#note').style('display', 'none');
             });
 
-        
+            d3.select ("#close_warning").on('click', function (){
+              d3.select('#warning').style('display', 'none');
+              d3.select('#note').style('display','none');
+            });
+
             //clear the list first
             var myList = document.getElementById('labels');
             myList.innerHTML = '';
@@ -335,11 +350,6 @@ Highcharts.chart('chart-section', {
             }
 
             d3.select('#label-display').style('display', 'block');
-
-
-
-          
-
         });
     });
 
@@ -862,6 +872,24 @@ Highcharts.chart('chart-section', {
   var edges = [{source: nodes[1], target: nodes[0]}];
 
   d3.select("#label-display").style('display', 'none');
+
+
+  // Testing
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   /** MAIN SVG **/

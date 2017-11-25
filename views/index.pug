@@ -30,7 +30,7 @@ html
     div(class='form-style-6')
      h1 Database Information
      form
-      input(type='text', id='database-host-connected', placeholder='Database Host Connected ')
+      input(type='text', id='database-host-connected', placeholder='Database Host Connected ', readonly=true)
       
 
   #label-display(class='scrollmenu')
@@ -52,16 +52,18 @@ html
    #query-section
    #result-section
     div#list-section
-     h3 Result Matches
+     h3 RESULT MATCHES
      ul#result-list
     div(class="alchemy", id='alchemy') 
   #chart-section
 
-  
   #note
    Database Connected
-   a(id='close') [close]
-
+   a(id='close',style="{padding: 6px}") &times
+  
+  #warning
+   Database Already Connnected!
+   a(id='close_warning', style="{padding: 6px}") &times
 
   script(type="text/javascript", src="//d3js.org/d3.v3.js")
   script(type="text/javascript", src="//cdn.jsdelivr.net/filesaver.js/0.1/FileSaver.min.js")

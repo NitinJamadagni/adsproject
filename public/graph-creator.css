@@ -59,6 +59,13 @@ body{
     background-color: #4c93ef;
 }
 
+
+#chart-section {
+  margin-left: 500px;
+}
+
+
+
 #toolbox input{
     width: 30px;
     opacity: 0.4;
@@ -228,6 +235,7 @@ li a:hover {
     margin-left: 50px;
 }
 
+
 @media screen and (max-height: 450px) {
   .sidenav {padding-top: 15px;}
   .sidenav a {font-size: 18px;}
@@ -321,8 +329,6 @@ li a:hover {
 }
 
 
-
-
 /* Labels Menu */
 div.scrollmenu {
     background-color: #333;
@@ -338,7 +344,6 @@ div.scrollmenu ul li {
     text-decoration: none;
     border: solid 2px gold
 }
-
 
 
 /* Notification Pop Up Menu */
@@ -368,6 +373,48 @@ div.scrollmenu ul li {
 }
 
 .cssanimations.csstransforms #note {
+    -webkit-transform: translateY(-50px);
+    -webkit-animation: slideDown 2.5s 1.0s 1 ease forwards;
+    -moz-transform:    translateY(-50px);
+    -moz-animation:    slideDown 2.5s 1.0s 1 ease forwards;
+}
+
+
+#close{
+  padding : 6px;
+}
+
+#close_warning {
+  padding : 6px;
+}
+
+
+#warning {
+    position: absolute;
+    z-index: 101;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #fde073;
+    text-align: center;
+    line-height: 2.5;
+    overflow: hidden; 
+    -webkit-box-shadow: 0 0 5px black;
+    -moz-box-shadow:    0 0 5px black;
+    box-shadow:         0 0 5px black;
+    display: none;
+}
+
+@-webkit-keyframes slideDown {
+    0%, 100% { -webkit-transform: translateY(-50px); }
+    10%, 90% { -webkit-transform: translateY(0px); }
+}
+@-moz-keyframes slideDown {
+    0%, 100% { -moz-transform: translateY(-50px); }
+    10%, 90% { -moz-transform: translateY(0px); }
+}
+
+.cssanimations.csstransforms #warning {
     -webkit-transform: translateY(-50px);
     -webkit-animation: slideDown 2.5s 1.0s 1 ease forwards;
     -moz-transform:    translateY(-50px);
