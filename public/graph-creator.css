@@ -29,10 +29,21 @@ body{
     
 }
 
+#canvas-body{
+  margin-top: -50px;
+}
+
+
 #label-display{
   height : 150px;
   width: 100%;
 }
+
+#label-display-title{
+  font-size : 30px;
+  color : #b8860b;
+}
+
 
 #labels{
   overflow-x: auto;
