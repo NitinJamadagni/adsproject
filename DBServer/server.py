@@ -80,10 +80,11 @@ def extractLabels(dbname , readID2Name):
 	return list(labels)
 
 
-def getAlchemyFormattedOutput(file,inputTemplate, dbname):
+def getAlchemyFormattedOutput(file,inputTemplate, dbname, labelSet):
 	# Json structure of the graphs
 	'''
 		{
+			"labelTypes" : []
 			"graphId" : [
 				{																								|
 					"edges" : [ {"source": '', "target" : ''},..] , "nodes" : [ {"id" : '', "label" : ''} ]		| -> Each of this is an input to alchemy
@@ -97,6 +98,7 @@ def getAlchemyFormattedOutput(file,inputTemplate, dbname):
 	# get the mappings of queryGraphNodeId : dbGraphNodeId from the output file 
 	
 	parsedGraphs = {}
+	parsedGraphs["types"] = labelSet
 	ID2NameMapped = False
 	if dbname in GraphID2NameMap.keys():
 		ID2NameMapped = True
@@ -136,16 +138,19 @@ def getInputTemplate(inputFile):
 		}
 	'''
 	template = {"edges" : [], "nodes" : []}
+	labelSet = set();
 	with open(inputFile,'r') as queryfile:
 		line = queryfile.readline()
 		noOfNodes = int(queryfile.readline().strip())
 		for i in range(0,noOfNodes):
-			template["nodes"].append({"id" : i, "label" : queryfile.readline().strip()})
+			label = queryfile.readline().strip()
+			labelSet.add(label)
+			template["nodes"].append({"id" : i, "label" : label , "node_type" : label})
 		noOfEdges = int(queryfile.readline().strip())
 		for i in range(0,noOfEdges):
 			source, target = map( lambda x : int(x) , queryfile.readline().strip().split(' ') )
 			template["edges"].append({"source" : source, "target" : target })
-	return template
+	return template,labelSet
 
 
 def parseCmdlineOutput(output):
@@ -262,9 +267,9 @@ def runQuery(dbname):
 
 
 	# getInputTemplate on queryFile
-	template = getInputTemplate(queryfile)
+	template, labelSet = getInputTemplate(queryfile)
 	#send output_file_name to get parsed, send the input template as parameter
-	parsedGraphs, ID2NameMapped = getAlchemyFormattedOutput(outfile, template, dbname)
+	parsedGraphs, ID2NameMapped = getAlchemyFormattedOutput(outfile, template, dbname, list(labelSet))
 
 	# delete the query file, delete the output_file from their folders
 	os.remove(queryfile)
