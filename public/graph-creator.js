@@ -117,11 +117,18 @@ document.onload = (function(d3, saveAs, Blob, undefined){
 
 
 
+    d3.select('#disconnect-database').on('click', function (){
 
+         var alchemy_div = document.getElementById('alchemy');
+         alchemy_div.innerHTML = "";
 
+         d3.select ('#database-host-connected').attr("value", "");
 
+         d3.select('#label-display').style('display', 'none');
+         thisGraph.state.databaseConnected = false;
 
-
+         thisGraph.state.labels = [];
+    });
 
 
     // submit the query.
@@ -563,6 +570,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
 
   // mousedown on node
   GraphCreator.prototype.circleMouseDown = function(d3node, d){
+    console.log ('circleMouseDown is called on clicking?');
     var thisGraph = this,
         state = thisGraph.state;
     d3.event.stopPropagation();
@@ -578,6 +586,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
 
   /* place editable text on node in place of svg text */
   GraphCreator.prototype.changeTextOfNode = function(d3node, d){
+    console.log ('changeTextOfNode is called on clicking?');
     var thisGraph= this,
         consts = thisGraph.consts,
         htmlEl = d3node.node();
@@ -588,6 +597,8 @@ document.onload = (function(d3, saveAs, Blob, undefined){
         useHW = curScale > 1 ? nodeBCR.width*0.71 : consts.nodeRadius*1.42;
 
         console.log ("the d.title ", d.title);
+
+
 
     // replace with editableconent text
     var d3txt = thisGraph.svg.selectAll("foreignObject")
@@ -630,6 +641,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
 
   // mouseup on nodes
   GraphCreator.prototype.circleMouseUp = function(d3node, d){
+    console.log ('circleMouseUp is called on clicking?');
     var thisGraph = this,
         state = thisGraph.state,
         consts = thisGraph.consts;
@@ -691,10 +703,12 @@ document.onload = (function(d3, saveAs, Blob, undefined){
   // mousedown on main svg
   GraphCreator.prototype.svgMouseDown = function(){
     this.state.graphMouseDown = true;
+    console.log ('svgMouseDown is called on clicking?');
   };
 
   // mouseup on main svg
   GraphCreator.prototype.svgMouseUp = function(){
+    console.log ('svgMouseUp is called on clicking?');
     var thisGraph = this,
         state = thisGraph.state;
     if (state.justScaleTransGraph) {
@@ -723,6 +737,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
 
   // keydown on main svg
   GraphCreator.prototype.svgKeyDown = function() {
+    console.log ('svgKeyDown is called on clicking?');
     var thisGraph = this,
         state = thisGraph.state,
         consts = thisGraph.consts;
@@ -752,6 +767,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
   };
 
   GraphCreator.prototype.svgKeyUp = function() {
+    console.log ('svgKeyUp is called on clicking?');
     this.state.lastKeyDown = -1;
   };
 
