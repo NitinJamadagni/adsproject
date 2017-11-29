@@ -5,8 +5,10 @@ html
  head
   link(rel="stylesheet", href="graph-creator.css")
   link(rel="stylesheet" , href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css")
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js")
   script(src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js")
   script(src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.16.4/lodash.min.js")
+  script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js")
   script(src="alchemy.js", type="text/javascript")
  body(style="{background-color: #4c93ef;}")
 
@@ -40,12 +42,12 @@ html
 
   #toolbox
    p Query ToolBox
-   button(id='submit-query') Submit Query
-   button(id='pointer-drag') Draw / Edit
-   button(id='query-drag') Drag / Delete
-   button(id='delete-graph') Delete Query
-   input(type='file', id='file-upload')
-   button(id='file-download') Download File
+   div(class='btn-group-vertical')
+    button(id='submit-query' class='btn btn-primary') Submit Query
+    button(id='pointer-drag' class='btn btn-primary') Draw / Edit
+    button(id='query-drag' class='btn btn-primary') Drag / Delete
+    button(id='delete-graph' class='btn btn-primary') Delete Query
+    button(id='file-download' class='btn btn-primary') Download File
  
 
   div#canvas-body
