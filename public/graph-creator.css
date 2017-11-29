@@ -25,22 +25,36 @@ body{
   margin: 20px;
 }
 
-#toolbox{
-    
-}
-
 #canvas-body{
-  margin-top: -50px;
+    margin-top: 20px;
 }
 
+#query-section-label{
+  margin-left: 200px;
+  margin-top: -40px;
+}
+
+#result-section-label{
+  margin-left : 200px;
+  margin-top: -40px;
+}
 
 #label-display{
   height : 150px;
   width: 100%;
 }
 
-#label-display-title{
-  font-size : 30px;
+#l
+#query-section-label{
+a margin-left: 200px;
+margin-top: -40px;bel-display-title{
+}  font-size : 30px;
+
+#result-section-label{
+  margin-left : 200px;
+  margin-top: -40px;
+}
+
   color : #b8860b;
 }
 
