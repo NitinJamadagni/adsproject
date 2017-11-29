@@ -80,15 +80,15 @@ def extractLabels(dbname , readID2Name):
 	return list(labels)
 
 
-def getAlchemyFormattedOutput(file,inputTemplate, dbname, labelSet):
+def getAlchemyFormattedOutput(file,inputTemplate, dbname,):
 	# Json structure of the graphs
 	'''
 		{
-			"labelTypes" : []
+			
 			"graphId" : [
-				{																								|
-					"edges" : [ {"source": '', "target" : ''},..] , "nodes" : [ {"id" : '', "label" : ''} ]		| -> Each of this is an input to alchemy
-				},																								|
+				{																																|
+					"types" : [],"edges" : [ {"source": '', "target" : ''},..] , "nodes" : [ {"id" : '', "label" : '',"node_type" : ''} ]		| -> Each of this is an input to alchemy
+				},																																|
 				{
 					...
 				}
@@ -98,7 +98,6 @@ def getAlchemyFormattedOutput(file,inputTemplate, dbname, labelSet):
 	# get the mappings of queryGraphNodeId : dbGraphNodeId from the output file 
 	
 	parsedGraphs = {}
-	parsedGraphs["types"] = labelSet
 	ID2NameMapped = False
 	if dbname in GraphID2NameMap.keys():
 		ID2NameMapped = True
@@ -137,7 +136,7 @@ def getInputTemplate(inputFile):
 				"nodes" : [ { "id" : _id, "label" : "" } ]
 		}
 	'''
-	template = {"edges" : [], "nodes" : []}
+	template = {"edges" : [], "nodes" : [] }
 	labelSet = set();
 	with open(inputFile,'r') as queryfile:
 		line = queryfile.readline()
@@ -150,7 +149,8 @@ def getInputTemplate(inputFile):
 		for i in range(0,noOfEdges):
 			source, target = map( lambda x : int(x) , queryfile.readline().strip().split(' ') )
 			template["edges"].append({"source" : source, "target" : target })
-	return template,labelSet
+	template["types"] = list(labelSet)
+	return template
 
 
 def parseCmdlineOutput(output):
@@ -267,9 +267,9 @@ def runQuery(dbname):
 
 
 	# getInputTemplate on queryFile
-	template, labelSet = getInputTemplate(queryfile)
+	template = getInputTemplate(queryfile)
 	#send output_file_name to get parsed, send the input template as parameter
-	parsedGraphs, ID2NameMapped = getAlchemyFormattedOutput(outfile, template, dbname, list(labelSet))
+	parsedGraphs, ID2NameMapped = getAlchemyFormattedOutput(outfile, template, dbname)
 
 	# delete the query file, delete the output_file from their folders
 	os.remove(queryfile)
