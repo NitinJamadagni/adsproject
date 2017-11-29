@@ -21,16 +21,18 @@ body{
     
 }
 
+#toolbox {
+  margin-top: 32px;
+  margin-left: -29px;
+
+}
+
 #database{
   margin: 20px;
 }
 
 #canvas-body{
     margin-top: 20px;
-}
-
-#toolbox{
-  margin-left: 600px
 }
 
 
@@ -49,20 +51,26 @@ body{
   width: 100%;
 }
 
-#l
+
 #query-section-label{
-a margin-left: 200px;
-margin-top: -40px;bel-display-title{
-}  font-size : 30px;
+ margin-left: 200px;
+ margin-top: -40px;
+}
+
+
+#label-display-title{
+  font-size : 30px;
+  color : #b8860b;
+}
+
+
+
 
 #result-section-label{
   margin-left : 200px;
   margin-top: -40px;
 }
-
-  color : #b8860b;
-}
-
+ 
 
 #labels{
   overflow-x: auto;

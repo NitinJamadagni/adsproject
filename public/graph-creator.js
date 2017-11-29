@@ -132,6 +132,8 @@ document.onload = (function(d3, saveAs, Blob, undefined){
          thisGraph.state.databaseConnected = false;
 
          thisGraph.state.labels = [];
+
+         
     });
 
 
@@ -180,6 +182,10 @@ document.onload = (function(d3, saveAs, Blob, undefined){
                   console.log ('the response ', thisGraph.state.response);
                   thisGraph.state.stats = data.response.stats;
 
+
+                  var result_count = document.getElementById('result-count');
+                  result_count.innerHTML = 'RESULT MATCHES : ' + thisGraph.state.stats.Candidates_Count
+
                   //clear the list first
                   var myList = document.getElementById('result-list');
                   myList.innerHTML = '';
@@ -217,10 +223,11 @@ document.onload = (function(d3, saveAs, Blob, undefined){
                                     forceLocked: false,
 
                                     graphHeight: function(){ return 400; },
-                                    graphWidth: function(){ return 400; },      
+                                    graphWidth: function(){ return 400; },
+                                    backgroundColour : '#FFF',      
                                     linkDistance: function(){ return 40; },
                                     nodeTypes: {"node_type" : thisGraph.state.response[database_id_clicked][graph_id_clicked].types},
-                                    nodeCaption: function(node){return "'Label' : " + node.label + " 'Id' : " + node.id;},
+                                    nodeCaption: function(node){return "Label : " + node.label + " ID  : " + node.id;},
                                     nodeStyle: {
                                       "all": {
                                           "radius": 30,
@@ -261,9 +268,13 @@ document.onload = (function(d3, saveAs, Blob, undefined){
                       //update the div.
                   }
 
+
+
+
                   // Build the chart
                         // TESGING 
                     var statistics = thisGraph.state.stats;
+
 
                     var load_time_percentage = (statistics.DB_Load_Time / statistics.Total_Time ) * 100;
                     var filtering_time_percentage = (statistics.Filtering_Time / statistics.Total_Time) * 100;
@@ -331,8 +342,11 @@ document.onload = (function(d3, saveAs, Blob, undefined){
             var names = data.response;
             console.log ('the response ', data.response);
 
+            //clear the list.
             var datbase_names_select = document.getElementById('database-name-select');
+            
 
+            //add the new list.
             for (var name in names){
               console.log ("the name  is ", name);
               var opt = document.createElement('option');
@@ -354,7 +368,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
 
         $.get('/queryMetadata', {database_host : d3.select('#database-host').property("value"), database_port : d3.select("#database-port").property("value"), database_name : d3.select("#database-name-select").property("value")} , function (data) { 
 
-            thisGraph.state.labels = data.response;
+            thisGraph.state.labels = data.response.sort();
             thisGraph.state.database_name_select = d3.select("#database-name-select").property("value");
             thisGraph.state.databaseConnected = true;
 
@@ -921,23 +935,6 @@ document.onload = (function(d3, saveAs, Blob, undefined){
 
 
   // Testing
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   /** MAIN SVG **/
   var svg = d3.select("#query-section").append("svg")
         .attr("width", "600")

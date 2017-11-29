@@ -41,22 +41,23 @@ html
    ul#labels
 
   div#canvas-body
+   div(class='btn-group-vertical', id ='toolbox')
+     button(id='submit-query' class='btn btn-primary') Submit Query
+     button(id='pointer-drag' class='btn btn-primary') Draw / Edit
+     button(id='query-drag' class='btn btn-primary') Drag / Delete
+     button(id='delete-graph' class='btn btn-primary') Delete Query
+     button(id='file-download' class='btn btn-primary') Download File
+   
    #query-section
     h3(id='query-section-label') Query Section
     
-    #toolbox
-     p Query ToolBox
-     div(class='btn-group-vertical')
-      button(id='submit-query' class='btn btn-primary') Submit Query
-      button(id='pointer-drag' class='btn btn-primary') Draw / Edit
-      button(id='query-drag' class='btn btn-primary') Drag / Delete
-      button(id='delete-graph' class='btn btn-primary') Delete Query
-      button(id='file-download' class='btn btn-primary') Download File
+   
+    
 
    #result-section
     h3(id='result-section-label') Result Section
     div#list-section
-     h3 RESULT MATCHES
+     h3(id='result-count') RESULT MATCHES
      ul#result-list
     div(class="alchemy", id='alchemy') 
   #chart-section

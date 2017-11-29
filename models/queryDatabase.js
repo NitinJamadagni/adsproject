@@ -36,7 +36,7 @@ module.exports = {
 		      })
 		     .catch(error => {
 				    console.log(error);
-				    callback({ labels : ['1', '2', '3']});
+				    callback({ labels : []});
 			  });
 	},
 
@@ -50,7 +50,7 @@ module.exports = {
 		      })
 		     .catch(error => {
 				    console.log(error);
-				    callback({ response : ['1', '2', '3']});
+				    callback({ response : []});
 			  });
 	}
 }
