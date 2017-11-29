@@ -31,6 +31,7 @@ html
      h1 Database Information
      form
       input(type='text', id='database-host-connected', placeholder='Database Host Connected ', readonly=true)
+     input(type='button', id='disconnect-database', value='Disconnect Database')
       
 
   #label-display(class='scrollmenu')
@@ -64,6 +65,7 @@ html
   #warning
    Database Already Connnected!
    a(id='close_warning', style="{padding: 6px}") &times
+
 
   script(type="text/javascript", src="//d3js.org/d3.v3.js")
   script(type="text/javascript", src="//cdn.jsdelivr.net/filesaver.js/0.1/FileSaver.min.js")
