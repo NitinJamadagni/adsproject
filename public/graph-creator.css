@@ -29,6 +29,11 @@ body{
     margin-top: 20px;
 }
 
+#toolbox{
+  margin-left: 600px
+}
+
+
 #query-section-label{
   margin-left: 200px;
   margin-top: -40px;

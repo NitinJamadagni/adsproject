@@ -177,6 +177,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
             success: function (data) {
                 
                   thisGraph.state.response = data.response.output;
+                  console.log ('the response ', thisGraph.state.response);
                   thisGraph.state.stats = data.response.stats;
 
                   //clear the list first
@@ -214,19 +215,6 @@ document.onload = (function(d3, saveAs, Blob, undefined){
                                     dataSource: thisGraph.state.response[database_id_clicked][graph_id_clicked],
                                     zoomControls : false,
                                     forceLocked: false,
-                                    graphHeight: function(){ return 400; },
-                                    graphWidth: function(){ return 400; },      
-                                    linkDistance: function(){ return 40; },
-                                    nodeTypes: {"node_type":[ "Maintainer",
-                                                              "Contributor"]},
-                                    nodeCaption: function(node){ 
-                                      return node.caption + " " + node.fun_fact;}
-                                    };
-
-                            var config = {
-                                    dataSource: thisGraph.state.response[database_id_clicked][graph_id_clicked],
-                                    zoomControls : false,
-                                    forceLocked: false,
 
                                     graphHeight: function(){ return 400; },
                                     graphWidth: function(){ return 400; },      
@@ -257,7 +245,9 @@ document.onload = (function(d3, saveAs, Blob, undefined){
                                     }
 
                             };
-                            thisGraph.state.response[database_id_clicked][graph_id_clicked].types.forEach(   t => config.nodeStyle[t] = { "color" : CSS_COLOR_NAMES[Math.floor(Math.random()*CSS_COLOR_NAMES.length)] } );
+                            console.log (thisGraph.state.response[database_id_clicked][graph_id_clicked]);
+
+                            thisGraph.state.response[database_id_clicked][graph_id_clicked].types.forEach( t => config.nodeStyle[t] = { "color" : CSS_COLOR_NAMES[Math.floor(Math.random()*CSS_COLOR_NAMES.length)] } );
 
                             alchemy = new Alchemy(config)  
 
