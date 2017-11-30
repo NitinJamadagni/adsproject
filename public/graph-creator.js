@@ -121,6 +121,10 @@ document.onload = (function(d3, saveAs, Blob, undefined){
 
 
 
+
+    
+
+
     d3.select('#disconnect-database').on('click', function (){
 
          var alchemy_div = document.getElementById('alchemy');
@@ -133,8 +137,39 @@ document.onload = (function(d3, saveAs, Blob, undefined){
 
          thisGraph.state.labels = [];
 
-         
+         var myList = document.getElementById('result-list');
+         myList.innerHTML = '';
+
+         var alchemy_div = document.getElementById('alchemy');
+         alchemy_div.innerHTML = "";
+
+         var result_count = document.getElementById('result-count');
+         result_count.innerHTML = "RESULT MATCHES";
+
+         var highcharts_container = document.getElementById('chart-section');
+         highcharts_container.innerHTML = '';
+
     });
+
+
+    d3.select('#delete-button').on("click", function () { 
+    
+        var selectedNode = thisGraph.state.selectedNode,
+            selectedEdge = thisGraph.state.selectedEdge;
+
+        if (selectedNode){
+                   thisGraph.nodes.splice(thisGraph.nodes.indexOf(selectedNode), 1);
+                   thisGraph.spliceLinksForNode(selectedNode);
+                   thisGraph.state.selectedNode = null;
+                   thisGraph.updateGraph();
+         } else if (selectedEdge){
+           thisGraph.edges.splice(thisGraph.edges.indexOf(selectedEdge), 1);
+           thisGraph.state.selectedEdge = null;
+           thisGraph.updateGraph();
+         }
+      });
+
+
 
 
     // submit the query.

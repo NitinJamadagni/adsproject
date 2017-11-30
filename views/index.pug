@@ -43,17 +43,15 @@ html
   div#canvas-body
    div(class='btn-group-vertical', id ='toolbox')
      button(id='submit-query' class='btn btn-primary') Submit Query
-     button(id='pointer-drag' class='btn btn-primary') Draw / Edit
-     button(id='query-drag' class='btn btn-primary') Drag / Delete
-     button(id='delete-graph' class='btn btn-primary') Delete Query
+     button(id='pointer-drag' class='btn btn-primary') Draw
+     button(id='query-drag' class='btn btn-primary') Select 
+     button(id='delete-button', class='btn btn-primary') Delete
+     button(id='delete-graph' class='btn btn-primary') Refresh Query
      button(id='file-download' class='btn btn-primary') Download File
    
    #query-section
     h3(id='query-section-label') Query Section
     
-   
-    
-
    #result-section
     h3(id='result-section-label') Result Section
     div#list-section
