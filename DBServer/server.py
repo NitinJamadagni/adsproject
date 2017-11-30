@@ -80,7 +80,7 @@ def extractLabels(dbname , readID2Name):
 	return list(labels)
 
 
-def getAlchemyFormattedOutput(file,inputTemplate, dbname,):
+def getAlchemyFormattedOutput(file,inputTemplate, dbname, paginationId):
 	# Json structure of the graphs
 	'''
 		{
@@ -101,9 +101,22 @@ def getAlchemyFormattedOutput(file,inputTemplate, dbname,):
 	ID2NameMapped = False
 	if dbname in GraphID2NameMap.keys():
 		ID2NameMapped = True
+	hasResults = False
 	with open(file,'r') as outfile:
+		skipLines = paginationId*50 - 50
+		lineLimit = 0
 		for line in outfile:
+			#skip the first so many lines
+			if skipLines > 0:
+				skipLines -= 1
+				continue
+			# starting now read only 50 lines
+			if lineLimit > 50:
+				break
+			lineLimit += 1
+
 			mappings = {}
+			hasResults = True
 			queryId, dbGraphId, mappingsLine = line.strip().split(':')
 			if dbGraphId not in parsedGraphs.keys():
 				if ID2NameMapped:
@@ -125,7 +138,7 @@ def getAlchemyFormattedOutput(file,inputTemplate, dbname,):
 				parsedGraphs[GraphID2NameMap[dbname][dbGraphId]].append(graph)
 			else:
 				parsedGraphs[dbGraphId].append(graph)
-	return parsedGraphs, ID2NameMapped
+	return parsedGraphs, ID2NameMapped, hasResults
 
 
 def getInputTemplate(inputFile):
@@ -229,8 +242,12 @@ def getLabels(dbname):
 
 # run the query file against the dbname, makesure the query file is uploaded from form with enctype attribute set to multipart/form-data, 
 # and the name should be set to queryfile, i.e <input type = "file" name = "queryfile" />
-@app.route('/runQuery/<string:dbname>', methods = ['POST'])
-def runQuery(dbname):
+@app.route('/runQuery/<string:dbname>/<int:paginationId>', methods = ['POST'])
+def runQuery(dbname,paginationId):
+
+	# pagination size is set to 50 results at a time
+	# so every time, id is multiplied by 50, then results[id*50 - 50 : id*50]
+
 	response = {}
 	if not os.path.isfile(datasourceFolder + dbname):
 		response["status"] = 'failure'
@@ -269,13 +286,14 @@ def runQuery(dbname):
 	# getInputTemplate on queryFile
 	template = getInputTemplate(queryfile)
 	#send output_file_name to get parsed, send the input template as parameter
-	parsedGraphs, ID2NameMapped = getAlchemyFormattedOutput(outfile, template, dbname)
+	parsedGraphs, ID2NameMapped , hasResults = getAlchemyFormattedOutput(outfile, template, dbname, paginationId)
 
 	# delete the query file, delete the output_file from their folders
 	os.remove(queryfile)
 	os.remove(outfile)
 
 	# jsonify the parsed output and return
+	response["response"]["hasResults"] = hasResults
 	response["response"]["output"] = parsedGraphs
 	response["response"]["ID2NameMapped"] = ID2NameMapped
 	return jsonify(response)
