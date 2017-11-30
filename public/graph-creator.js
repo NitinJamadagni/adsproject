@@ -179,6 +179,13 @@ document.onload = (function(d3, saveAs, Blob, undefined){
     d3.select("#submit-query").on("click", function(){
 
 
+      d3.select('#loading').style('display', 'block');
+      d3.select('#close_loading').on('click', function(){
+        d3.select('#loading').style('display', 'none');
+      });
+
+
+
       var alchemy_div = document.getElementById('alchemy');
       alchemy_div.innerHTML = "";
 
@@ -216,6 +223,13 @@ document.onload = (function(d3, saveAs, Blob, undefined){
             dataType: 'json',
             success: function (data) {
                 
+                  //notify
+                  d3.select('#loading_finished').style('display', 'block');
+                  d3.select('#close_finished').on('click', function(){
+                    d3.select('#loading').style('display', 'none');
+                  });
+
+
                   thisGraph.state.response = data.response.output;
                   console.log ('the response ', thisGraph.state.response);
                   thisGraph.state.stats = data.response.stats;
@@ -678,7 +692,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
         placePad  =  5*curScale,
         useHW = curScale > 1 ? nodeBCR.width*0.71 : consts.nodeRadius*1.42;
 
-        console.log ("the d.title ", d.title);
+        console.log("the d.title " + nodeBCR.width + " " + nodeBCR.height);
 
 
 

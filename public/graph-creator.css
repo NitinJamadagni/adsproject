@@ -429,8 +429,12 @@ div.scrollmenu ul li {
   padding : 6px;
 }
 
+#close_finished{
+  padding: 6px;
+}
 
-#warning {
+
+#warning, #loading, #loading_finished {
     position: absolute;
     z-index: 101;
     top: 0;
