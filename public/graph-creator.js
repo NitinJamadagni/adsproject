@@ -401,7 +401,6 @@ document.onload = (function(d3, saveAs, Blob, undefined){
             //clear the list.
             var datbase_names_select = document.getElementById('database-name-select');
             
-
             //add the new list.
             for (var name in names){
               console.log ("the name  is ", name);
@@ -420,7 +419,15 @@ document.onload = (function(d3, saveAs, Blob, undefined){
 
         if (thisGraph.state.databaseConnected){
             d3.select('#warning').style('display', 'block');
+            return;
         }
+
+
+        d3.select('#connection').style('display','block');
+        d3.select('#close_loading_connection').on('click', function(){
+          d3.select('#connection').style('display', 'none');
+        });
+
 
         $.get('/queryMetadata', {database_host : d3.select('#database-host').property("value"), database_port : d3.select("#database-port").property("value"), database_name : d3.select("#database-name-select").property("value")} , function (data) { 
 
@@ -428,6 +435,8 @@ document.onload = (function(d3, saveAs, Blob, undefined){
             thisGraph.state.database_name_select = d3.select("#database-name-select").property("value");
             thisGraph.state.databaseConnected = true;
 
+            //notify.
+            d3.select('#connection').style('display', 'none');
             d3.select ('#database-host-connected').attr("value", d3.select("#database-name-select").property("value"));
 
             document.getElementById('closeBtn').click();

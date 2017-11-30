@@ -23,9 +23,9 @@ html
      form
       input(type='text', id='database-host', placeholder='Database Host')
       input(type='text', id='database-port', placeholder='Database Port') 
+      input(type='button', id='find-database', value ='Find Databases')
       select(id='database-name-select', placeholder ='Database Names')
        option(value="", selected='true') Select Database
-      input(type='button', id='find-database', value ='Find Databases')
       input(type='button', id='connect-database', value='Connect Database')
 
   
@@ -63,16 +63,22 @@ html
   #chart-section
 
 
+
+  #connection
+   h6 Connecting to database.
+   a(id='close_loading_connection',style="{padding: 6px}") &times  
+
+
   #error
    h6 Node Name Error.
    a(id='close_error',style="{padding: 6px}") &times
 
   #note
-   h6 Database Connected
+   h6 Database Connected.
    a(id='close',style="{padding: 6px}") &times
   
   #warning
-   h6 Database Already Connnected!
+   h6 Database Already Connnected.
    a(id='close_warning', style="{padding: 6px}") &times
 
   #loading
