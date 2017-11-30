@@ -23,6 +23,16 @@ router.post('/submitQuery', function (request, response){
 	});
 });
 
+
+//pagination query
+router.post('/paginationQuery', function (request, response){
+	inputQueryController.paginationQuery(request, response, function(pagination_response){
+		response.json(JSON.parse(pagination_response));
+	});
+});
+
+
+
 // to get all the labels,
 router.get('/queryMetadata', function (request, response){
 	inputQueryController.queryMetadata(request,response);

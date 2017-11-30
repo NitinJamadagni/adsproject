@@ -45,7 +45,6 @@ body{
   margin-top: -80px;
   font: normal 33px/3 "Comic Sans MS", cursive, sans-serif;
   color: #4e5c66;
-  text-decoration: underline;
 }
 
 #result-count{
@@ -64,7 +63,6 @@ body{
  margin-top: -80px;
  font: normal 33px/3 "Comic Sans MS", cursive, sans-serif;
  color: #4e5c66;
- text-decoration: underline;
 }
 
 
@@ -73,14 +71,9 @@ body{
   color : #b8860b;
 }
 
-
- 
-
 #labels{
   overflow-x: auto;
 }
-
-
 
 #query-section{
     width: 600px;
@@ -430,8 +423,20 @@ div.scrollmenu ul li {
   padding : 6px;
 }
 
+#close_finished{
+  padding: 6px;
+}
 
-#warning {
+
+#close_error{
+  padding : 6px;
+}
+
+#close_loading_connection{
+  padding : 6px;
+}
+
+#warning, #loading, #loading_finished, #error , #connection{
     position: absolute;
     z-index: 101;
     top: 0;

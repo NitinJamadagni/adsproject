@@ -1,6 +1,8 @@
 var fileSystem = require('fs');
 var queryDatabase = require('../models/queryDatabase');
 
+var current_query_filename = "";
+
 
 function getNodeIndex(nodeId, nodes){
 	for (var index = 0; index < nodes.length; index++){
@@ -29,6 +31,7 @@ module.exports = {
 
 		parsed_data += "#query_" + query_id +  "\n";
 		fileName = "#query_" + query_id;
+		current_query_filename = fileName;
 
 		var nodes = graph_data.nodes;
 		var edges = graph_data.edges;
@@ -104,10 +107,24 @@ module.exports = {
 		queryDatabase.databases(database_config, function (data){
 			response.json(data);
 		});
+	},
 
+	paginationQuery : function (request, response, callback){
 
+		
+		var database_config = {
+			host : request.body.database_host,
+			port : request.body.database_port,
+			name : request.body.database_name,
+			pagination_index: request.body.result_pagination_id
+		}
+
+		// call the model to send the input file.
+		queryDatabase.paginationQuery(database_config, "queries/" + current_query_filename, 
+			function paginationResult(database_response){
+				callback(database_response);
+			}
+		);
 	}
-
-
 
 }
