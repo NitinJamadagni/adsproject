@@ -111,18 +111,20 @@ def getAlchemyFormattedOutput(file,inputTemplate, dbname, paginationId):
 				skipLines -= 1
 				continue
 			# starting now read only 50 lines
-			if lineLimit > 50:
+			if lineLimit >= 50:
 				break
 			lineLimit += 1
-
 			mappings = {}
 			hasResults = True
 			queryId, dbGraphId, mappingsLine = line.strip().split(':')
-			if dbGraphId not in parsedGraphs.keys():
-				if ID2NameMapped:
+			
+			if ID2NameMapped:
+				if GraphID2NameMap[dbname][dbGraphId] not in parsedGraphs.keys():
 					parsedGraphs[GraphID2NameMap[dbname][dbGraphId]] = []
-				else:
+			else:
+				if dbGraphId not in parsedGraphs.keys():
 					parsedGraphs[dbGraphId] = []
+
 			for pair in list(eval(mappingsLine)):
 				mappings[pair[0]] = pair[1]
 
