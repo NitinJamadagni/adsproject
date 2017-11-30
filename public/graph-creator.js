@@ -30,6 +30,8 @@ document.onload = (function(d3, saveAs, Blob, undefined){
       database_name_select: "",
       databaseConnected : false,
       result_pagination_id: 1,
+      result_page_count: 0,
+      view_page_result_count : 0
     };
 
 
@@ -211,25 +213,25 @@ document.onload = (function(d3, saveAs, Blob, undefined){
                   thisGraph.state.response = data.response.output;
                   console.log ('the response ', thisGraph.state.response);
                 
-                  var result_count = document.getElementById('result-count');
-                  result_count.innerHTML = 'RESULT MATCHES : ' +  Object.keys(thisGraph.state.response).length + ' of ' + thisGraph.state.stats.Candidates_Count
-
+              
                   //clear the list first
                   var myList = document.getElementById('result-list');
                   myList.innerHTML = '';
 
 
-                  if (thisGraph.state.stats.Candidates_Count == '0'){
+                  if (thisGraph.state.stats.Matches_Count == '0'){
                     myList.innerHTML = '<li> No matching results found in the database </li>'; 
                   }
 
-
+                  var total_graphs = 0
                   for (var graph_id in thisGraph.state.response){
                       var graphs = thisGraph.state.response[graph_id];
 
                       var count = 1;
                       for (var graph in graphs){
                         
+                        total_graphs = total_graphs + 1;
+
                         var ul = document.getElementById("result-list");
                         var li = document.createElement("li");
                         var a = document.createElement("a");
@@ -296,7 +298,11 @@ document.onload = (function(d3, saveAs, Blob, undefined){
                       //update the div.
                   }
 
+                  thisGraph.state.result_page_count = total_graphs;
+                  thisGraph.state.view_page_result_count =thisGraph.state.view_page_result_count +  thisGraph.state.result_page_count;
 
+                  var result_count = document.getElementById('result-count');
+                  result_count.innerHTML = 'Matches ' + thisGraph.state.view_page_result_count  + ' of ' + thisGraph.state.stats.Matches_Count
             },
             data: query_json}); 
     });
@@ -333,23 +339,21 @@ document.onload = (function(d3, saveAs, Blob, undefined){
             dataType: 'json',
             success: function(data){
 
-                thisGraph.state.response = data.response.output;
+                  thisGraph.state.response = data.response.output;
                   console.log ('the response ', thisGraph.state.response);
                 
-                  var result_count = document.getElementById('result-count');
-                  result_count.innerHTML = 'RESULT MATCHES : ' + thisGraph.state.stats.Candidates_Count
-
+        
                   //clear the list first
                   var myList = document.getElementById('result-list');
                   myList.innerHTML = '';
 
 
-                  if (thisGraph.state.stats.Candidates_Count == '0'){
+                  if (thisGraph.state.stats.Matches_Count == '0'){
                     myList.innerHTML = '<li> No matching results found in the database </li>'; 
                   }
 
                   // Outputing the response.
-
+                  var total_graphs = 0;
                   for (var graph_id in thisGraph.state.response){
                       var graphs = thisGraph.state.response[graph_id];
 
@@ -358,6 +362,8 @@ document.onload = (function(d3, saveAs, Blob, undefined){
                       //create parent graph.with the graph id.
                       for (var graph in graphs){
                         
+                        total_graphs = total_graphs + 1;
+
                         var ul = document.getElementById("result-list");
                         var li = document.createElement("li");
                         var a = document.createElement("a");
@@ -424,6 +430,14 @@ document.onload = (function(d3, saveAs, Blob, undefined){
                       //update the div.
                   }
 
+                  thisGraph.state.result_page_count = total_graphs;
+                  thisGraph.state.view_page_result_count =thisGraph.state.view_page_result_count -  thisGraph.state.result_page_count;
+
+                  thisGraph.state.view_page_result_count = (thisGraph.state.view_page_result_count <= 0 
+                  ? thisGraph.state.result_page_count : thisGraph.state.view_page_result_count);
+
+                  var result_count = document.getElementById('result-count');
+                  result_count.innerHTML = 'Matches ' + thisGraph.state.view_page_result_count  + ' of ' + thisGraph.state.stats.Matches_Count
 
             },
             data: query_json}); 
@@ -495,24 +509,24 @@ document.onload = (function(d3, saveAs, Blob, undefined){
                   thisGraph.state.stats = data.response.stats;
 
 
-                  var result_count = document.getElementById('result-count');
-                  result_count.innerHTML = 'RESULT MATCHES : ' + thisGraph.state.stats.Candidates_Count
-
                   //clear the list first
                   var myList = document.getElementById('result-list');
                   myList.innerHTML = '';
 
 
-                  if (thisGraph.state.stats.Candidates_Count == '0'){
+                  if (thisGraph.state.stats.Matches_Count == '0'){
                     myList.innerHTML = '<li> No matching results found in the database </li>'; 
                   }
 
 
+                  var total_graphs = 0;
                   for (var graph_id in thisGraph.state.response){
                       var graphs = thisGraph.state.response[graph_id];
 
                       var count = 1;
                       for (var graph in graphs){
+
+                        total_graphs = total_graphs + 1;
                         
                         var ul = document.getElementById("result-list");
                         var li = document.createElement("li");
@@ -580,6 +594,11 @@ document.onload = (function(d3, saveAs, Blob, undefined){
                       //update the div.
                   }
 
+
+                  thisGraph.state.result_page_count = total_graphs;
+                  thisGraph.state.view_page_result_count = thisGraph.state.result_page_count;
+                  var result_count = document.getElementById('result-count');
+                  result_count.innerHTML = 'Matches ' + thisGraph.state.view_page_result_count  + ' of ' + thisGraph.state.stats.Matches_Count
 
 
 
