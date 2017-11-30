@@ -121,10 +121,6 @@ document.onload = (function(d3, saveAs, Blob, undefined){
 
 
 
-
-    
-
-
     d3.select('#disconnect-database').on('click', function (){
 
          var alchemy_div = document.getElementById('alchemy');
@@ -150,6 +146,13 @@ document.onload = (function(d3, saveAs, Blob, undefined){
          highcharts_container.innerHTML = '';
 
     });
+
+
+    d3.select('#upload-file').on("click", function(){
+       document.getElementById('file-hidden-upload').click();
+    });
+
+
 
 
     d3.select('#delete-button').on("click", function () { 
@@ -445,7 +448,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
     });
 
 
-    d3.select("#file-upload").on("change", function(){
+    d3.select("#file-hidden-upload").on("change", function(){
       if (window.File && window.FileReader && window.FileList && window.Blob) {
         var uploadFile = this.files[0];
         console.log ('the upload file ', uploadFile);

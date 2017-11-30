@@ -41,12 +41,14 @@ html
    ul#labels
 
   div#canvas-body
+   input(type='file', id='file-hidden-upload')
    div(class='btn-group-vertical', id ='toolbox')
      button(id='submit-query' class='btn btn-primary') Submit Query
      button(id='pointer-drag' class='btn btn-primary') Draw
      button(id='query-drag' class='btn btn-primary') Select 
      button(id='delete-button', class='btn btn-primary') Delete
      button(id='delete-graph' class='btn btn-primary') Refresh Query
+     button(id='upload-file', class='btn btn-primary') Upload File
      button(id='file-download' class='btn btn-primary') Download File
    
    #query-section

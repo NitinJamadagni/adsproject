@@ -35,6 +35,9 @@ body{
     margin-top: 20px;
 }
 
+#file-hidden-upload{
+  display:none;
+}
 
 #query-section-label{
   margin-left: 200px;
