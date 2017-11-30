@@ -348,11 +348,14 @@ document.onload = (function(d3, saveAs, Blob, undefined){
                     myList.innerHTML = '<li> No matching results found in the database </li>'; 
                   }
 
+                  // Outputing the response.
 
                   for (var graph_id in thisGraph.state.response){
                       var graphs = thisGraph.state.response[graph_id];
 
                       var count = 1;
+
+                      //create parent graph.with the graph id.
                       for (var graph in graphs){
                         
                         var ul = document.getElementById("result-list");
