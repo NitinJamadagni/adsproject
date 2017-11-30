@@ -178,14 +178,6 @@ document.onload = (function(d3, saveAs, Blob, undefined){
     // submit the query.
     d3.select("#submit-query").on("click", function(){
 
-
-      d3.select('#loading').style('display', 'block');
-      d3.select('#close_loading').on('click', function(){
-        d3.select('#loading').style('display', 'none');
-      });
-
-
-
       var alchemy_div = document.getElementById('alchemy');
       alchemy_div.innerHTML = "";
 
@@ -193,10 +185,21 @@ document.onload = (function(d3, saveAs, Blob, undefined){
       for (var index = 0; index < thisGraph.nodes.length; index++){
         var node = thisGraph.nodes[index];
         if (node.title == 'NEW NODE'){
-          alert("Error in query graph node labels ");
+          window.scrollBy(0,-1000);
+          d3.select('#error').style('display', 'block');
+          d3.select('#close_error').on('click', function(){
+              d3.select('#error').style('display', 'none');
+          });
           return;
         }
       }
+
+      //notify
+      window.scrollBy(0, -1000);
+      d3.select('#loading').style('display', 'block');
+      d3.select('#close_loading').on('click', function(){
+        d3.select('#loading').style('display', 'none');
+      });
 
 
       var saveEdges = [];
@@ -226,6 +229,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
                   //notify
                   d3.select('#loading_finished').style('display', 'block');
                   d3.select('#close_finished').on('click', function(){
+                    d3.select('#loading_finished').style('display', 'none');
                     d3.select('#loading').style('display', 'none');
                   });
 

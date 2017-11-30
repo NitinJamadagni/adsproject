@@ -52,10 +52,10 @@ html
      button(id='file-download' class='btn btn-primary') Download File
    
    #query-section
-    h3(id='query-section-label') Query Section
+    h3(id='query-section-label') QUERY REGION
     
    #result-section
-    h3(id='result-section-label') Result Section
+    h3(id='result-section-label') RESULTS REGION
     div#list-section
      h3(id='result-count') RESULT MATCHES
      ul#result-list
@@ -63,20 +63,24 @@ html
   #chart-section
 
 
+  #error
+   h6 Node Name Error.
+   a(id='close_error',style="{padding: 6px}") &times
+
   #note
-   Database Connected
+   h6 Database Connected
    a(id='close',style="{padding: 6px}") &times
   
   #warning
-   Database Already Connnected!
+   h6 Database Already Connnected!
    a(id='close_warning', style="{padding: 6px}") &times
 
   #loading
-   Querying! 
+   h6 Querying
    a(id='close_loading', style="{padding: 6px}") &times
 
   #loading_finished
-   Loading Finished.
+   h6 Loading Finished.
    a(id='close_finished', style="{padding: 6px}") &times   
 
   script(type="text/javascript", src="//d3js.org/d3.v3.js")

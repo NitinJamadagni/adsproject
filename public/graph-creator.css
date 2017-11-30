@@ -39,14 +39,17 @@ body{
   display:none;
 }
 
-#query-section-label{
-  margin-left: 200px;
-  margin-top: -40px;
-}
 
 #result-section-label{
-  margin-left : 200px;
-  margin-top: -40px;
+  margin-left: 170px;
+  margin-top: -80px;
+  font: normal 33px/3 "Comic Sans MS", cursive, sans-serif;
+  color: #4e5c66;
+}
+
+#result-count{
+  font: normal 25px/1 "Comic Sans MS", cursive, sans-serif;
+  margin-top: 0px;
 }
 
 #label-display{
@@ -56,8 +59,10 @@ body{
 
 
 #query-section-label{
- margin-left: 200px;
- margin-top: -40px;
+ margin-left: 170px;
+ margin-top: -80px;
+ font: normal 33px/3 "Comic Sans MS", cursive, sans-serif;
+ color: #4e5c66;
 }
 
 
@@ -66,20 +71,9 @@ body{
   color : #b8860b;
 }
 
-
-
-
-#result-section-label{
-  margin-left : 200px;
-  margin-top: -40px;
-}
- 
-
 #labels{
   overflow-x: auto;
 }
-
-
 
 #query-section{
     width: 600px;
@@ -214,7 +208,7 @@ h2 {
 }
 
 li {
-  font: 200 20px/1.5 Helvetica, Verdana, sans-serif;
+  font: normal 20px/3 "Comic Sans MS", cursive, sans-serif;
   border-bottom: 1px solid #ccc;
 }
 
@@ -225,7 +219,7 @@ li:last-child {
 li a {
   text-decoration: none;
   color: #000;
-
+  font-size: 10px;
   -webkit-transition: font-size 0.3s ease, background-color 0.3s ease;
   -moz-transition: font-size 0.3s ease, background-color 0.3s ease;
   -o-transition: font-size 0.3s ease, background-color 0.3s ease;
@@ -236,7 +230,7 @@ li a {
 }
 
 li a:hover {
-  font-size: 30px;
+  font-size: 15px;
   background: #f6f6f6;
 }
 
@@ -434,7 +428,11 @@ div.scrollmenu ul li {
 }
 
 
-#warning, #loading, #loading_finished {
+#close_error{
+  padding : 6px;
+}
+
+#warning, #loading, #loading_finished, #error {
     position: absolute;
     z-index: 101;
     top: 0;
