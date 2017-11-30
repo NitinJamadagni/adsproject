@@ -9,7 +9,7 @@ module.exports = {
 
 	queryWithFile : function (database_config,filename, callback){
 
-		var query = 'http://' + database_config.host + ':' + database_config.port +'/runQuery/' + database_config.name;
+		var query = 'http://' + database_config.host + ':' + database_config.port +'/runQuery/' + database_config.name + '/1';
 		console.log ('query', query);
 
 		//var form = new FormData();
@@ -21,19 +21,7 @@ module.exports = {
 			console.log(body);
 			callback(body);
 
-		});
-
-		// axios.post(query, JSON.parse({file : queryString}))
-  // 			 .then(response => {
-  // 			 	console.log('the response ', response);
-
-		// 		 callback({ "0" : [ { "nodes" : [ "1" , "2" , "3"]}]});
-		//       })
-		//      .catch(error => {
-		//      	console.log("the error");
-		// 		    console.log(error);
-		// 	  });
-		
+		});		
 
 	},
 
@@ -48,7 +36,36 @@ module.exports = {
 		      })
 		     .catch(error => {
 				    console.log(error);
-				    callback({ labels : ['1', '2', '3']});
+				    callback({ labels : []});
 			  });
+	},
+
+	databases : function (database_config, callback){
+		 var query = 'http://' + database_config.host + ':' + database_config.port +'/getDatabaseNames';
+		 axios.get(query)
+  			 .then(response => {
+  			 		console.log(response);
+
+				 callback(response.data);
+		      })
+		     .catch(error => {
+				    console.log(error);
+				    callback({ response : []});
+			  });
+	},
+
+	paginationQuery: function (database_config, filename,callback){
+		var query = 'http://' + database_config.host + ':' + database_config.port +'/runQuery/' + database_config.name + '/' + database_config.pagination_index;
+		console.log ('query', query);
+
+		//var form = new FormData();
+		//form.append('queryfile' , fs.createReadStream(filename))
+		request.post({url : query,
+			formData : {'queryfile' : fs.createReadStream(filename)}
+		} , function(err, httpResponse, body){
+			if (err) console.error("paginatoin fialed : " ,err);
+			console.log(body);
+			callback(body);
+		});		
 	}
 }

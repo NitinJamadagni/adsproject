@@ -8,6 +8,13 @@ router.get('/', function (request, response){
 	response.render('index');
 });
 
+
+router.get('/database', function (request, response){
+	inputQueryController.databases(request,response, function(databases){
+		response.json(JSON.parse(databases));
+	});
+});
+
 router.post('/submitQuery', function (request, response){
 	console.log ('the request', request.body);
 	inputQueryController.parseQueryGraph(request,response, function (database_response){
@@ -15,6 +22,16 @@ router.post('/submitQuery', function (request, response){
 		response.json(JSON.parse(database_response));
 	});
 });
+
+
+//pagination query
+router.post('/paginationQuery', function (request, response){
+	inputQueryController.paginationQuery(request, response, function(pagination_response){
+		response.json(JSON.parse(pagination_response));
+	});
+});
+
+
 
 // to get all the labels,
 router.get('/queryMetadata', function (request, response){
