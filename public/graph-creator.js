@@ -29,6 +29,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
       stats: {},
       database_name_select: "",
       databaseConnected : false,
+      result_pagination_id: 1,
     };
 
 
@@ -172,6 +173,258 @@ document.onload = (function(d3, saveAs, Blob, undefined){
          }
       });
 
+
+
+
+    d3.select('#next_page').on('click', function(){
+
+        //construct graph data
+        var saveEdges = [];
+        thisGraph.edges.forEach(function(val, i){
+          saveEdges.push({source: val.source.id, target: val.target.id});
+        });
+        
+        var graph_data = window.JSON.stringify({"nodes": thisGraph.nodes, "edges": saveEdges})
+        console.log (graph_data);
+
+
+        //increment the result_page_id
+        thisGraph.state.result_pagination_id = thisGraph.state.result_pagination_id + 1
+
+        var query_json = {
+          result_pagination_id: thisGraph.state.result_pagination_id,
+          graph_data : JSON.parse(graph_data),
+          database_host : d3.select('#database-host').property("value"),
+          database_port : d3.select('#database-port').property("value"),
+          database_name : thisGraph.state.database_name_select
+        }
+
+
+
+        //SEND A PAGINATION REQUEST.
+        $.ajax({
+            url: '/paginationQuery',
+            type: 'post',
+            dataType: 'json',
+            success: function(data){
+
+                  thisGraph.state.response = data.response.output;
+                  console.log ('the response ', thisGraph.state.response);
+                
+                  var result_count = document.getElementById('result-count');
+                  result_count.innerHTML = 'RESULT MATCHES : ' +  Object.keys(thisGraph.state.response).length + ' of ' + thisGraph.state.stats.Candidates_Count
+
+                  //clear the list first
+                  var myList = document.getElementById('result-list');
+                  myList.innerHTML = '';
+
+
+                  if (thisGraph.state.stats.Candidates_Count == '0'){
+                    myList.innerHTML = '<li> No matching results found in the database </li>'; 
+                  }
+
+
+                  for (var graph_id in thisGraph.state.response){
+                      var graphs = thisGraph.state.response[graph_id];
+
+                      var count = 1;
+                      for (var graph in graphs){
+                        
+                        var ul = document.getElementById("result-list");
+                        var li = document.createElement("li");
+                        var a = document.createElement("a");
+
+                        a.setAttribute('id', graph_id + '_' + (count - 1));
+                        a.setAttribute('href', '#');
+                        a.addEventListener('click', function (){
+                            console.log ('this ', this);
+                            var ids = this.getAttribute('id').split('_');
+                            var database_id_clicked = ids[0];
+                            var graph_id_clicked = ids[1];
+
+                            var alchemy_div = document.getElementById('alchemy');
+                            alchemy_div.innerHTML = "";
+
+                            var config = {
+                                    dataSource: thisGraph.state.response[database_id_clicked][graph_id_clicked],
+                                    zoomControls : false,
+                                    forceLocked: false,
+
+                                    graphHeight: function(){ return 400; },
+                                    graphWidth: function(){ return 400; },
+                                    backgroundColour : '#FFF',      
+                                    linkDistance: function(){ return 40; },
+                                    nodeTypes: {"node_type" : thisGraph.state.response[database_id_clicked][graph_id_clicked].types},
+                                    nodeCaption: function(node){return "Label : " + node.label + " ID  : " + node.id;},
+                                    nodeStyle: {
+                                      "all": {
+                                          "radius": 30,
+                                          //"color"  : CSS_COLOR_NAMES[Math.floor(Math.random()*CSS_COLOR_NAMES.length)],
+                                          "borderColor": "Black",
+                                          "borderWidth": function (d, radius) { return radius / 7 },
+                                          "captionColor": "#FFFFFF",
+                                          "captionBackground": null,
+                                          "captionSize": 20,
+                                          "selected": {
+                                              "color" : "#FFFFFF",
+                                              "borderColor": "#349FE3"
+                                          },
+                                          "highlighted": {
+                                              "color" : "#EEEEFF"
+                                          },
+                                          "hidden": {
+                                              "color": "none", 
+                                              "borderColor": "none"
+                                          }
+                                      }
+                                    }
+
+                            };
+                            console.log (thisGraph.state.response[database_id_clicked][graph_id_clicked]);
+
+                            thisGraph.state.response[database_id_clicked][graph_id_clicked].types.forEach( t => config.nodeStyle[t] = { "color" : CSS_COLOR_NAMES[Math.floor(Math.random()*CSS_COLOR_NAMES.length)] } );
+
+                            alchemy = new Alchemy(config)  
+
+                            // once  you get this id, use to extract the graph_id and the graph number from the response to update the data source of the alchemy.
+                        });
+                        a.appendChild(document.createTextNode("Graph " + graph_id));
+                        
+                        li.appendChild(a);
+                        ul.appendChild(li);
+                      }
+                      //update the div.
+                  }
+
+
+            },
+            data: query_json}); 
+    });
+
+
+    d3.select('#previous_page').on('click', function(){
+
+        //construct graph data
+        var saveEdges = [];
+        thisGraph.edges.forEach(function(val, i){
+          saveEdges.push({source: val.source.id, target: val.target.id});
+        });
+        
+        var graph_data = window.JSON.stringify({"nodes": thisGraph.nodes, "edges": saveEdges})
+        console.log (graph_data);
+
+
+        //increment the result_page_id
+        thisGraph.state.result_pagination_id = thisGraph.state.result_pagination_id - 1
+        thisGraph.state.result_pagination_id = (thisGraph.state.result_pagination_id  < 1 ? 1: thisGraph.state.result_pagination_id);
+
+        var query_json = {
+          result_pagination_id: thisGraph.state.result_pagination_id,
+          graph_data : JSON.parse(graph_data),
+          database_host : d3.select('#database-host').property("value"),
+          database_port : d3.select('#database-port').property("value"),
+          database_name : thisGraph.state.database_name_select
+        }
+
+        //SEND A PAGINATION REQUEST.
+        $.ajax({
+            url: '/paginationQuery',
+            type: 'post',
+            dataType: 'json',
+            success: function(data){
+
+                thisGraph.state.response = data.response.output;
+                  console.log ('the response ', thisGraph.state.response);
+                
+                  var result_count = document.getElementById('result-count');
+                  result_count.innerHTML = 'RESULT MATCHES : ' + thisGraph.state.stats.Candidates_Count
+
+                  //clear the list first
+                  var myList = document.getElementById('result-list');
+                  myList.innerHTML = '';
+
+
+                  if (thisGraph.state.stats.Candidates_Count == '0'){
+                    myList.innerHTML = '<li> No matching results found in the database </li>'; 
+                  }
+
+
+                  for (var graph_id in thisGraph.state.response){
+                      var graphs = thisGraph.state.response[graph_id];
+
+                      var count = 1;
+                      for (var graph in graphs){
+                        
+                        var ul = document.getElementById("result-list");
+                        var li = document.createElement("li");
+                        var a = document.createElement("a");
+
+                        a.setAttribute('id', graph_id + '_' + (count - 1));
+                        a.setAttribute('href', '#');
+                        a.addEventListener('click', function (){
+                            console.log ('this ', this);
+                            var ids = this.getAttribute('id').split('_');
+                            var database_id_clicked = ids[0];
+                            var graph_id_clicked = ids[1];
+
+                            var alchemy_div = document.getElementById('alchemy');
+                            alchemy_div.innerHTML = "";
+
+                            var config = {
+                                    dataSource: thisGraph.state.response[database_id_clicked][graph_id_clicked],
+                                    zoomControls : false,
+                                    forceLocked: false,
+
+                                    graphHeight: function(){ return 400; },
+                                    graphWidth: function(){ return 400; },
+                                    backgroundColour : '#FFF',      
+                                    linkDistance: function(){ return 40; },
+                                    nodeTypes: {"node_type" : thisGraph.state.response[database_id_clicked][graph_id_clicked].types},
+                                    nodeCaption: function(node){return "Label : " + node.label + " ID  : " + node.id;},
+                                    nodeStyle: {
+                                      "all": {
+                                          "radius": 30,
+                                          //"color"  : CSS_COLOR_NAMES[Math.floor(Math.random()*CSS_COLOR_NAMES.length)],
+                                          "borderColor": "Black",
+                                          "borderWidth": function (d, radius) { return radius / 7 },
+                                          "captionColor": "#FFFFFF",
+                                          "captionBackground": null,
+                                          "captionSize": 20,
+                                          "selected": {
+                                              "color" : "#FFFFFF",
+                                              "borderColor": "#349FE3"
+                                          },
+                                          "highlighted": {
+                                              "color" : "#EEEEFF"
+                                          },
+                                          "hidden": {
+                                              "color": "none", 
+                                              "borderColor": "none"
+                                          }
+                                      }
+                                    }
+
+                            };
+                            console.log (thisGraph.state.response[database_id_clicked][graph_id_clicked]);
+
+                            thisGraph.state.response[database_id_clicked][graph_id_clicked].types.forEach( t => config.nodeStyle[t] = { "color" : CSS_COLOR_NAMES[Math.floor(Math.random()*CSS_COLOR_NAMES.length)] } );
+
+                            alchemy = new Alchemy(config)  
+
+                            // once  you get this id, use to extract the graph_id and the graph number from the response to update the data source of the alchemy.
+                        });
+                        a.appendChild(document.createTextNode("Graph " + graph_id));
+                        
+                        li.appendChild(a);
+                        ul.appendChild(li);
+                      }
+                      //update the div.
+                  }
+
+
+            },
+            data: query_json}); 
+    });
 
 
 
