@@ -148,6 +148,11 @@ document.onload = (function(d3, saveAs, Blob, undefined){
          var highcharts_container = document.getElementById('chart-section');
          highcharts_container.innerHTML = '';
 
+
+         d3.select('#list-section').style('display', 'none');
+         d3.select('#pagination').style('display', 'none');
+
+
     });
 
 
@@ -302,7 +307,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
                   thisGraph.state.view_page_result_count =thisGraph.state.view_page_result_count +  thisGraph.state.result_page_count;
 
                   var result_count = document.getElementById('result-count');
-                  result_count.innerHTML = 'Matches ' + thisGraph.state.view_page_result_count  + ' of ' + thisGraph.state.stats.Matches_Count
+                  result_count.innerHTML = 'Viewing ' + thisGraph.state.view_page_result_count  + ' of ' + thisGraph.state.stats.Matches_Count + ' Matches'
             },
             data: query_json}); 
     });
@@ -437,8 +442,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
                   ? thisGraph.state.result_page_count : thisGraph.state.view_page_result_count);
 
                   var result_count = document.getElementById('result-count');
-                  result_count.innerHTML = 'Matches ' + thisGraph.state.view_page_result_count  + ' of ' + thisGraph.state.stats.Matches_Count
-
+                  result_count.innerHTML = 'Viewing ' + thisGraph.state.view_page_result_count  + ' of ' + thisGraph.state.stats.Matches_Count + ' Matches';
             },
             data: query_json}); 
     });
@@ -461,7 +465,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
           });
           return;
       }
-      
+
       for (var index = 0; index < thisGraph.nodes.length; index++){
         var node = thisGraph.nodes[index];
         if (node.title == 'NEW NODE'){
@@ -611,8 +615,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
                   thisGraph.state.result_page_count = total_graphs;
                   thisGraph.state.view_page_result_count = thisGraph.state.result_page_count;
                   var result_count = document.getElementById('result-count');
-                  result_count.innerHTML = 'Matches ' + thisGraph.state.view_page_result_count  + ' of ' + thisGraph.state.stats.Matches_Count
-
+                  result_count.innerHTML = 'Viewing ' + thisGraph.state.view_page_result_count  + ' of ' + thisGraph.state.stats.Matches_Count + ' Matches';
 
 
                   // Build the chart
@@ -655,18 +658,18 @@ document.onload = (function(d3, saveAs, Blob, undefined){
                         name: 'Database operation',
                         colorByPoint: true,
                         data: [{
-                            name: 'Database Load Time',
+                            name: 'Database Load Time  : ' + statistics.DB_Load_Time  + 'ms',
                             y: parseFloat(load_time_percentage)
                         }, {
-                            name: 'Filtering Time',
+                            name: 'Filtering Time : ' + statistics.Filtering_Time + 'ms',
                             y: parseFloat(filtering_time_percentage),
                             sliced: true,
                             selected: true
                         }, {
-                            name: 'Matching Time',
+                            name: 'Matching Time : ' + statistics.Matching_Time + 'ms', 
                             y: parseFloat(matching_time_percentage)
                         }, {
-                            name: 'Query Build Time',
+                            name: 'Query Build Time : ' + statistics.Query_Build_time + 'ms',
                             y: parseFloat(query_build_time_percentage)
                         }]
                     }]
