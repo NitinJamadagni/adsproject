@@ -1,7 +1,7 @@
 document.onload = (function(d3, saveAs, Blob, undefined){
   "use strict";
 
-  var CSS_COLOR_NAMES = ["AliceBlue","AntiqueWhite","Aqua","Aquamarine","Azure","Beige","Bisque","Black","BlanchedAlmond","Blue","BlueViolet","Brown","BurlyWood","CadetBlue","Chartreuse","Chocolate","Coral","CornflowerBlue","Cornsilk","Crimson","Cyan","DarkBlue","DarkCyan","DarkGoldenRod","DarkGray","DarkGrey","DarkGreen","DarkKhaki","DarkMagenta","DarkOliveGreen","Darkorange","DarkOrchid","DarkRed","DarkSalmon","DarkSeaGreen","DarkSlateBlue","DarkSlateGray","DarkSlateGrey","DarkTurquoise","DarkViolet","DeepPink","DeepSkyBlue","DimGray","DimGrey","DodgerBlue","FireBrick","FloralWhite","ForestGreen","Fuchsia","Gainsboro","GhostWhite","Gold","GoldenRod","Gray","Grey","Green","GreenYellow","HoneyDew","HotPink","IndianRed","Indigo","Ivory","Khaki","Lavender","LavenderBlush","LawnGreen","LemonChiffon","LightBlue","LightCoral","LightCyan","LightGoldenRodYellow","LightGray","LightGrey","LightGreen","LightPink","LightSalmon","LightSeaGreen","LightSkyBlue","LightSlateGray","LightSlateGrey","LightSteelBlue","LightYellow","Lime","LimeGreen","Linen","Magenta","Maroon","MediumAquaMarine","MediumBlue","MediumOrchid","MediumPurple","MediumSeaGreen","MediumSlateBlue","MediumSpringGreen","MediumTurquoise","MediumVioletRed","MidnightBlue","MintCream","MistyRose","Moccasin","NavajoWhite","Navy","OldLace","Olive","OliveDrab","Orange","OrangeRed","Orchid","PaleGoldenRod","PaleGreen","PaleTurquoise","PaleVioletRed","PapayaWhip","PeachPuff","Peru","Pink","Plum","PowderBlue","Purple","Red","RosyBrown","RoyalBlue","SaddleBrown","Salmon","SandyBrown","SeaGreen","SeaShell","Sienna","Silver","SkyBlue","SlateBlue","SlateGray","SlateGrey","Snow","SpringGreen","SteelBlue","Tan","Teal","Thistle","Tomato","Turquoise","Violet","Wheat","White","WhiteSmoke","Yellow","YellowGreen"];
+  var CSS_COLOR_NAMES = ["AliceBlue","AntiqueWhite","Aqua","Aquamarine","Azure","Beige","Bisque","BlanchedAlmond","Blue","BlueViolet","Brown","BurlyWood","CadetBlue","Chartreuse","Chocolate","Coral","CornflowerBlue","Cornsilk","Crimson","Cyan","DarkBlue","DarkCyan","DarkGoldenRod","DarkGray","DarkGrey","DarkGreen","DarkKhaki","DarkMagenta","DarkOliveGreen","Darkorange","DarkOrchid","DarkRed","DarkSalmon","DarkSeaGreen","DarkSlateBlue","DarkSlateGray","DarkSlateGrey","DarkTurquoise","DarkViolet","DeepPink","DeepSkyBlue","DimGray","DimGrey","DodgerBlue","FireBrick","FloralWhite","ForestGreen","Fuchsia","Gainsboro","GhostWhite","Gold","GoldenRod","Gray","Grey","Green","GreenYellow","HoneyDew","HotPink","IndianRed","Indigo","Ivory","Khaki","Lavender","LavenderBlush","LawnGreen","LemonChiffon","LightBlue","LightCoral","LightCyan","LightGoldenRodYellow","LightGray","LightGrey","LightGreen","LightPink","LightSalmon","LightSeaGreen","LightSkyBlue","LightSlateGray","LightSlateGrey","LightSteelBlue","LightYellow","Lime","LimeGreen","Linen","Magenta","Maroon","MediumAquaMarine","MediumBlue","MediumOrchid","MediumPurple","MediumSeaGreen","MediumSlateBlue","MediumSpringGreen","MediumTurquoise","MediumVioletRed","MidnightBlue","MintCream","MistyRose","Moccasin","NavajoWhite","Navy","OldLace","Olive","OliveDrab","Orange","OrangeRed","Orchid","PaleGoldenRod","PaleGreen","PaleTurquoise","PaleVioletRed","PapayaWhip","PeachPuff","Peru","Pink","Plum","PowderBlue","Purple","Red","RosyBrown","RoyalBlue","SaddleBrown","Salmon","SandyBrown","SeaGreen","SeaShell","Sienna","Silver","SkyBlue","SlateBlue","SlateGray","SlateGrey","Snow","SpringGreen","SteelBlue","Tan","Teal","Thistle","Tomato","Turquoise","Violet","Wheat","White","WhiteSmoke","Yellow","YellowGreen"];
 
 
 
@@ -37,7 +37,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
 
     // define arrow markers for graph links
     var defs = svg.append('svg:defs');
-    defs.append('svg:marker')
+    defs.append('svg:line')
       .attr('id', 'end-arrow')
       .attr('viewBox', '0 -5 10 10')
       .attr('refX', "32")
@@ -152,7 +152,8 @@ document.onload = (function(d3, saveAs, Blob, undefined){
          d3.select('#list-section').style('display', 'none');
          d3.select('#pagination').style('display', 'none');
 
-
+         //delete the query graph as well.
+         thisGraph.deleteGraph(true);
     });
 
 
@@ -531,149 +532,149 @@ document.onload = (function(d3, saveAs, Blob, undefined){
 
                   if (thisGraph.state.stats.Matches_Count == '0'){
                     myList.innerHTML = '<li> No matching results found in the database </li>'; 
-                  }
+
+                  }else{
+
+                            d3.select('#pagination').style('display', 'block');
+
+                            var total_graphs = 0;
+                            for (var graph_id in thisGraph.state.response){
+                                var graphs = thisGraph.state.response[graph_id];
+
+                                var count = 1;
+                                for (var graph in graphs){
+
+                                  total_graphs = total_graphs + 1;
+                                  
+                                  var ul = document.getElementById("result-list");
+                                  var li = document.createElement("li");
+                                  var a = document.createElement("a");
+
+                                  a.setAttribute('id', graph_id + '_' + (count - 1));
+                                  a.setAttribute('href', '#');
+                                  a.addEventListener('click', function (){
+                                      console.log ('this ', this);
+                                      var ids = this.getAttribute('id').split('_');
+                                      var database_id_clicked = ids[0];
+                                      var graph_id_clicked = ids[1];
+
+                                      var alchemy_div = document.getElementById('alchemy');
+                                      alchemy_div.innerHTML = "";
+
+                                      var config = {
+                                              dataSource: thisGraph.state.response[database_id_clicked][graph_id_clicked],
+                                              zoomControls : false,
+                                              forceLocked: false,
+
+                                              graphHeight: function(){ return 400; },
+                                              graphWidth: function(){ return 400; },
+                                              backgroundColour : '#FFF',      
+                                              linkDistance: function(){ return 40; },
+                                              nodeTypes: {"node_type" : thisGraph.state.response[database_id_clicked][graph_id_clicked].types},
+                                              nodeCaption: function(node){return "Label : " + node.label + " ID  : " + node.id;},
+                                              nodeStyle: {
+                                                "all": {
+                                                    "radius": 30,
+                                                    //"color"  : CSS_COLOR_NAMES[Math.floor(Math.random()*CSS_COLOR_NAMES.length)],
+                                                    "borderColor": "Black",
+                                                    "borderWidth": function (d, radius) { return radius / 7 },
+                                                    "captionColor": "#FFFFFF",
+                                                    "captionBackground": null,
+                                                    "captionSize": 20,
+                                                    "selected": {
+                                                        "color" : "#FFFFFF",
+                                                        "borderColor": "#349FE3"
+                                                    },
+                                                    "highlighted": {
+                                                        "color" : "#EEEEFF"
+                                                    },
+                                                    "hidden": {
+                                                        "color": "none", 
+                                                        "borderColor": "none"
+                                                    }
+                                                }
+                                              }
+
+                                      };
+                                      console.log (thisGraph.state.response[database_id_clicked][graph_id_clicked]);
+
+                                      thisGraph.state.response[database_id_clicked][graph_id_clicked].types.forEach( t => config.nodeStyle[t] = { "color" : CSS_COLOR_NAMES[Math.floor(Math.random()*CSS_COLOR_NAMES.length)] } );
+
+                                      alchemy = new Alchemy(config)  
+
+                                      // once  you get this id, use to extract the graph_id and the graph number from the response to update the data source of the alchemy.
+                                  });
+                                  a.appendChild(document.createTextNode("Graph " + graph_id));
+                                  
+                                  li.appendChild(a);
+                                  ul.appendChild(li);
+                                }
+                                //update the div.
+                            }
 
 
-                  d3.select('#pagination').style('display', 'block');
+                            thisGraph.state.result_page_count = total_graphs;
+                            thisGraph.state.view_page_result_count = thisGraph.state.result_page_count;
+                            var result_count = document.getElementById('result-count');
+                            result_count.innerHTML = 'Viewing ' + thisGraph.state.view_page_result_count  + ' of ' + thisGraph.state.stats.Matches_Count + ' Matches';
 
-                  var total_graphs = 0;
-                  for (var graph_id in thisGraph.state.response){
-                      var graphs = thisGraph.state.response[graph_id];
+                            // build the chart.
+                            
+                            var statistics = thisGraph.state.stats;
 
-                      var count = 1;
-                      for (var graph in graphs){
 
-                        total_graphs = total_graphs + 1;
-                        
-                        var ul = document.getElementById("result-list");
-                        var li = document.createElement("li");
-                        var a = document.createElement("a");
+                            var load_time_percentage = (statistics.DB_Load_Time / statistics.Total_Time ) * 100;
+                            var filtering_time_percentage = (statistics.Filtering_Time / statistics.Total_Time) * 100;
+                            var matching_time_percentage = (statistics.Matching_Time / statistics.Total_Time) * 100;
+                            var query_build_time_percentage  = (statistics.Query_Build_time / statistics.Total_Time) * 100;
 
-                        a.setAttribute('id', graph_id + '_' + (count - 1));
-                        a.setAttribute('href', '#');
-                        a.addEventListener('click', function (){
-                            console.log ('this ', this);
-                            var ids = this.getAttribute('id').split('_');
-                            var database_id_clicked = ids[0];
-                            var graph_id_clicked = ids[1];
 
-                            var alchemy_div = document.getElementById('alchemy');
-                            alchemy_div.innerHTML = "";
-
-                            var config = {
-                                    dataSource: thisGraph.state.response[database_id_clicked][graph_id_clicked],
-                                    zoomControls : false,
-                                    forceLocked: false,
-
-                                    graphHeight: function(){ return 400; },
-                                    graphWidth: function(){ return 400; },
-                                    backgroundColour : '#FFF',      
-                                    linkDistance: function(){ return 40; },
-                                    nodeTypes: {"node_type" : thisGraph.state.response[database_id_clicked][graph_id_clicked].types},
-                                    nodeCaption: function(node){return "Label : " + node.label + " ID  : " + node.id;},
-                                    nodeStyle: {
-                                      "all": {
-                                          "radius": 30,
-                                          //"color"  : CSS_COLOR_NAMES[Math.floor(Math.random()*CSS_COLOR_NAMES.length)],
-                                          "borderColor": "Black",
-                                          "borderWidth": function (d, radius) { return radius / 7 },
-                                          "captionColor": "#FFFFFF",
-                                          "captionBackground": null,
-                                          "captionSize": 20,
-                                          "selected": {
-                                              "color" : "#FFFFFF",
-                                              "borderColor": "#349FE3"
-                                          },
-                                          "highlighted": {
-                                              "color" : "#EEEEFF"
-                                          },
-                                          "hidden": {
-                                              "color": "none", 
-                                              "borderColor": "none"
-                                          }
-                                      }
+                            Highcharts.chart('chart-section', {
+                                chart: {
+                                    plotBackgroundColor: null,
+                                    plotBorderWidth: null,
+                                    plotShadow: false,
+                                    type: 'pie',
+                                    height: 500,
+                                    width: 500
+                                },
+                                title: {
+                                    text: 'Database Stats'
+                                },
+                                tooltip: {
+                                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                                },
+                                plotOptions: {
+                                    pie: {
+                                        allowPointSelect: true,
+                                        cursor: 'pointer',
+                                        dataLabels: {
+                                            enabled: false
+                                        },
+                                        showInLegend: true
                                     }
-
-                            };
-                            console.log (thisGraph.state.response[database_id_clicked][graph_id_clicked]);
-
-                            thisGraph.state.response[database_id_clicked][graph_id_clicked].types.forEach( t => config.nodeStyle[t] = { "color" : CSS_COLOR_NAMES[Math.floor(Math.random()*CSS_COLOR_NAMES.length)] } );
-
-                            alchemy = new Alchemy(config)  
-
-                            // once  you get this id, use to extract the graph_id and the graph number from the response to update the data source of the alchemy.
-                        });
-                        a.appendChild(document.createTextNode("Graph " + graph_id));
-                        
-                        li.appendChild(a);
-                        ul.appendChild(li);
-                      }
-                      //update the div.
-                  }
-
-
-                  thisGraph.state.result_page_count = total_graphs;
-                  thisGraph.state.view_page_result_count = thisGraph.state.result_page_count;
-                  var result_count = document.getElementById('result-count');
-                  result_count.innerHTML = 'Viewing ' + thisGraph.state.view_page_result_count  + ' of ' + thisGraph.state.stats.Matches_Count + ' Matches';
-
-
-                  // Build the chart
-                        // TESGING 
-                    var statistics = thisGraph.state.stats;
-
-
-                    var load_time_percentage = (statistics.DB_Load_Time / statistics.Total_Time ) * 100;
-                    var filtering_time_percentage = (statistics.Filtering_Time / statistics.Total_Time) * 100;
-                    var matching_time_percentage = (statistics.Matching_Time / statistics.Total_Time) * 100;
-                    var query_build_time_percentage  = (statistics.Query_Build_time / statistics.Total_Time) * 100;
-
-
-                    Highcharts.chart('chart-section', {
-                    chart: {
-                        plotBackgroundColor: null,
-                        plotBorderWidth: null,
-                        plotShadow: false,
-                        type: 'pie',
-                        height: 500,
-                        width: 500
-                    },
-                    title: {
-                        text: 'Database Stats'
-                    },
-                    tooltip: {
-                        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-                    },
-                    plotOptions: {
-                        pie: {
-                            allowPointSelect: true,
-                            cursor: 'pointer',
-                            dataLabels: {
-                                enabled: false
-                            },
-                            showInLegend: true
-                        }
-                    },
-                    series: [{
-                        name: 'Database operation',
-                        colorByPoint: true,
-                        data: [{
-                            name: 'Database Load Time  : ' + statistics.DB_Load_Time  + 'ms',
-                            y: parseFloat(load_time_percentage)
-                        }, {
-                            name: 'Filtering Time : ' + statistics.Filtering_Time + 'ms',
-                            y: parseFloat(filtering_time_percentage),
-                            sliced: true,
-                            selected: true
-                        }, {
-                            name: 'Matching Time : ' + statistics.Matching_Time + 'ms', 
-                            y: parseFloat(matching_time_percentage)
-                        }, {
-                            name: 'Query Build Time : ' + statistics.Query_Build_time + 'ms',
-                            y: parseFloat(query_build_time_percentage)
-                        }]
-                    }]
-                });
+                                },
+                                series: [{
+                                    name: 'Database operation',
+                                    colorByPoint: true,
+                                    data: [{
+                                        name: 'Database Load Time  : ' + statistics.DB_Load_Time  + 'ms',
+                                        y: parseFloat(load_time_percentage)
+                                    }, {
+                                        name: 'Filtering Time : ' + statistics.Filtering_Time + 'ms',
+                                        y: parseFloat(filtering_time_percentage),
+                                        sliced: true,
+                                        selected: true
+                                    }, {
+                                        name: 'Matching Time : ' + statistics.Matching_Time + 'ms', 
+                                        y: parseFloat(matching_time_percentage)
+                                    }, {
+                                        name: 'Query Build Time : ' + statistics.Query_Build_time + 'ms',
+                                        y: parseFloat(query_build_time_percentage)
+                                    }]
+                                }]
+                            });
+                    }
 
             },
             data: request_data
@@ -871,6 +872,11 @@ document.onload = (function(d3, saveAs, Blob, undefined){
       doDelete = window.confirm("Press OK to delete this graph");
     }
     if(doDelete){
+
+      d3.select('#list-section').style('display','none');
+      d3.select('#pagination').style('display', 'none');
+      d3.select('#alchemy').style('display','none')
+
       thisGraph.nodes = [];
       thisGraph.edges = [];
       thisGraph.updateGraph();
@@ -997,7 +1003,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
         useHW = curScale > 1 ? nodeBCR.width*0.71 : consts.nodeRadius*1.42;
 
         console.log("the d.title " + nodeBCR.width + " " + nodeBCR.height);
-
+        console.log ('the useHW ', useHW);
 
 
     // replace with editableconent text
@@ -1006,7 +1012,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
           .enter()
           .append("foreignObject")
           .attr("x", nodeBCR.left + placePad )
-          .attr("y", nodeBCR.top + placePad)
+          .attr("y", nodeBCR.top - 3 *  placePad)
           .attr("height", 2*useHW)
           .attr("width", useHW)
           .append("xhtml:p")
@@ -1262,8 +1268,6 @@ document.onload = (function(d3, saveAs, Blob, undefined){
   };
 
 
-
-
   /**** MAIN ****/
 
   // warn the user when leaving
@@ -1283,9 +1287,8 @@ document.onload = (function(d3, saveAs, Blob, undefined){
       yLoc = 100;
 
   // initial node data
-  var nodes = [{title: "NEW NODE", id: 0, x: xLoc, y: yLoc},
-               {title: "NEW NODE", id: 1, x: xLoc, y: yLoc + 200}];
-  var edges = [{source: nodes[1], target: nodes[0]}];
+  var nodes = [];
+  var edges = [];
 
   d3.select("#label-display").style('display', 'none');
 
