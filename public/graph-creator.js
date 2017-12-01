@@ -452,6 +452,16 @@ document.onload = (function(d3, saveAs, Blob, undefined){
       alchemy_div.innerHTML = "";
 
       //verify at submission all the nodes have the appropriate labels.
+
+      if (thisGraph.nodes.length == 0){
+        window.scrollBy(0,-1000);
+          d3.select('#error').style('display', 'block');
+          d3.select('#close_error').on('click', function(){
+              d3.select('#error').style('display', 'none');
+          });
+          return;
+      }
+      
       for (var index = 0; index < thisGraph.nodes.length; index++){
         var node = thisGraph.nodes[index];
         if (node.title == 'NEW NODE'){
@@ -508,6 +518,7 @@ document.onload = (function(d3, saveAs, Blob, undefined){
                   console.log ('the response ', thisGraph.state.response);
                   thisGraph.state.stats = data.response.stats;
 
+                  d3.select('#list-section').style('display','block');
 
                   //clear the list first
                   var myList = document.getElementById('result-list');
@@ -518,6 +529,8 @@ document.onload = (function(d3, saveAs, Blob, undefined){
                     myList.innerHTML = '<li> No matching results found in the database </li>'; 
                   }
 
+
+                  d3.select('#pagination').style('display', 'block');
 
                   var total_graphs = 0;
                   for (var graph_id in thisGraph.state.response){

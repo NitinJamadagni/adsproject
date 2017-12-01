@@ -21,21 +21,19 @@ html
     div(class='form-style-6')
      h1 Database Settings
      form
-      input(type='text', id='database-host', placeholder='Database Host')
-      input(type='text', id='database-port', placeholder='Database Port') 
+      input(type='text', id='database-host', placeholder='Database Host' required)
+      input(type='text', id='database-port', placeholder='Database Port' required) 
       input(type='button', id='find-database', value ='Find Databases')
       select(id='database-name-select', placeholder ='Database Names')
        option(value="", selected='true') Select Database
       input(type='button', id='connect-database', value='Connect Database')
 
-  
     div(class='form-style-6')
      h1 Database Information
      form
       input(type='text', id='database-host-connected', placeholder='Database Host Connected ', readonly=true)
      input(type='button', id='disconnect-database', value='Disconnect Database')
       
-
   #label-display(class='scrollmenu')
    p(id='label-display-title') Node Labels 
    ul#labels
